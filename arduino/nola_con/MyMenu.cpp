@@ -10,15 +10,24 @@
  * Date   : March 31, 2018
  * Version: 0.4
  */
-#include "MyButtons.h"
+#include "MyMenu.h"
 
 // class constructor
-MyButtons::MyButtons(){
-  pinMode(UP, INPUT_PULLUP);
-  pinMode(ESC, INPUT_PULLUP);
-  pinMode(ENTER, INPUT_PULLUP);
-  pinMode(DOWN, INPUT_PULLUP);
+MyMenu::MyMenu() {
+  currentMenu = 0;   
+  high_lit = 0;
 }
 
 //<<destructor>>
-MyButtons::~MyButtons(){/*nothing to destruct*/}
+MyMenu::~MyMenu(){/*nothing to destruct*/}
+
+void MyMenu::begin(){
+  Serial.println( "Called MyMenu::begin" );
+}
+
+char* MyMenu::getMyMenu() {
+  char *mymenu = (char*)malloc(1);
+  strcpy(mymenu, "bling");
+  strcpy(mymenu, "\ngames\nnetwork");
+  return mymenu;
+}

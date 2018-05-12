@@ -10,22 +10,40 @@
  * Date   : March 31, 2018
  * Version: 0.4
  */
-
-#ifndef MY_DISPLAY_H
-  #define MY_DISPLAY_H
+#ifndef MY_MENU_H
+#define MY_MENU_H
 
 #include <Arduino.h>
-#include <SSD1306.h>
 
-  class MyDisplay{
-    public:
-      MyDisplay();
-      ~MyDisplay();
-      void begin();
-      void showNolaLogo(); 
-      void showDeadlocksLogo();
-      void clearMyDisplay();
-      void updateMyDisplay(int16_t, int16_t, String);
-  };
-   
-#endif // MY_DISPLAY_H
+/* 
+ * menu 
+ * 
+ * 0. bling
+ *   0.0 
+ *   0.1 cybercop
+ *   0.3 rainbow
+ *   0.4 chase
+ * 1. games
+ *    1.1 snake
+ *    1.2 pong
+ * 2. network   
+ *   2.1 wifi scanner
+ *   2.2 mqtt connect
+*/
+
+class MyMenu{
+  public:
+    MyMenu();
+    ~MyMenu();
+
+    // Change this to your handle
+    const String myHandle = "@nola_con";
+    uint8_t currentMenu;
+    uint8_t high_lit;
+    
+    void begin();  
+    char* getMyMenu();
+};
+
+#endif //MY_MENU_H
+
