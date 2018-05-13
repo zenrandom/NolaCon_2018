@@ -41,6 +41,26 @@ int switchPin2 = D4;        // DOWN
 int switchPin3 = D7;        // BACK
 int switchPin4 = D10;       // ENTER
 
+// ******************* game *********************
+const unsigned long PADDLE_RATE = 33;
+const unsigned long BALL_RATE = 16;
+const uint8_t PADDLE_HEIGHT = 24;
+void drawCourt();
+void burgess_pong();
+
+uint8_t ball_x = 64, ball_y = 32;
+uint8_t ball_dir_x = 1, ball_dir_y = 1;
+unsigned long ball_update;
+
+unsigned long paddle_update;
+const uint8_t CPU_X = 12;
+uint8_t cpu_y = 16;
+
+const uint8_t PLAYER_X = 115;
+uint8_t player_y = 16;
+
+// ******************* game *********************
+
 // nola logo
 const unsigned char PROGMEM fdl_bmp1 [] = {
   0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf0, 

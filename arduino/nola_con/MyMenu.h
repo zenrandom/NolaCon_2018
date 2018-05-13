@@ -18,17 +18,18 @@
 /* 
  * menu 
  * 
- * 0. bling
- *   0.0 
- *   0.1 cybercop
- *   0.3 rainbow
- *   0.4 chase
- * 1. games
- *    1.1 snake
- *    1.2 pong
+ * 1. bling
+ *    
+ *   1 cybercop
+ *   2 rainbow
+ *   3 white
+
  * 2. network   
  *   2.1 wifi scanner
  *   2.2 mqtt connect
+ * 1. games
+ *    1.1 snake
+ *    1.2 pong
 */
 
 class MyMenu{

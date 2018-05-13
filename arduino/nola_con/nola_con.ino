@@ -38,86 +38,63 @@ Thread ledThread = Thread();
 //ButtonThread btn3Thread(switchPin3, 3000);;
 //ButtonThread btn4Thread(switchPin4, 3000);;
 
-
-void cyberPolice() {
-  mymenu.myText = " CYBER\nPOLICE";
-  int loop = 1;
-  
-  while (loop = 1) {
-  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-    mymenu.inv == 1;
-    mymenu.page == 1;
-    loop = 0;
-    button_press("1");
-    break;
-  } else if (digitalRead(switchPin2) == LOW) {
-        mymenu.inv == 1;
-    mymenu.page == 1;
-    loop = 0;
-    button_press("2");
-    break;
-  } else if (digitalRead(switchPin3) == LOW) {
-        mymenu.inv == 1;
-    mymenu.page == 1;
-    loop = 0;
-    button_press("3");
-    break;
-  } else if (digitalRead(switchPin4) == LOW) {
-        mymenu.inv == 1;
-    mymenu.page == 1;
-    loop = 0;
-    button_press("4");
-    break;
-  } else {
-    display.setTextSize(3);
-    display.setTextColor(WHITE);
-    display.setCursor(0,0); 
-    display.println(mymenu.myText);
-    display.display();
-  }
-  
-  for(uint16_t i = 0; i < ledCount; i++)
-  {
-    
-    if (i%2 == 0) {
-      //uint8_t x = time - i * 8;
-      colors[i].red = 0;
-      colors[i].green = 0;
-      colors[i].blue = 255;
-    } else {
-      colors[i].red = 0;
-      colors[i].green = 255;
-      colors[i].blue = 0;
+/* Converts a color from HSV to RGB.
+ * h is hue, as a number between 0 and 360.
+ * s is the saturation, as a number between 0 and 255.
+ * v is the value, as a number between 0 and 255. */
+rgb_color hsvToRgb(uint16_t h, uint8_t s, uint8_t v)
+{
+    uint8_t f = (h % 60) * 255 / 60;
+    uint8_t p = (255 - s) * (uint16_t)v / 255;
+    uint8_t q = (255 - f * (uint16_t)s / 255) * (uint16_t)v / 255;
+    uint8_t t = (255 - (255 - f) * (uint16_t)s / 255) * (uint16_t)v / 255;
+    uint8_t r = 0, g = 0, b = 0;
+    switch((h / 60) % 6){
+        case 0: r = v; g = t; b = p; break;
+        case 1: r = q; g = v; b = p; break;
+        case 2: r = p; g = v; b = t; break;
+        case 3: r = p; g = q; b = v; break;
+        case 4: r = t; g = p; b = v; break;
+        case 5: r = v; g = p; b = q; break;
     }
-    
-  }  
-  ledStrip.write(colors, ledCount, 10);
-  delay(200);
-  
-  for(uint16_t i = 0; i < ledCount; i++)
-    if (i%2 != 0) {
-      //uint8_t x = time - i * 8;
-      colors[i].red = 0;
-      colors[i].green = 0;
-      colors[i].blue = 255;
-    } else {
-      colors[i].red = 0;
-      colors[i].green = 255;
-      colors[i].blue = 0;
-    }
-  ledStrip.write(colors, ledCount, 5);
-  delay(200);
-  }
+    return rgb_color(r, g, b);
 }
+
+
+// This function sends a white color with the specified power,
+// which should be between 0 and 7905.
+void sendWhite(uint16_t power)
+{
+  // Choose the lowest possible 5-bit brightness that will work.
+  uint8_t brightness5Bit = 1;
+  while(brightness5Bit * 255 < power && brightness5Bit < 31)
+  {
+    brightness5Bit++;
+  }
+
+  // Uncomment this line to simulate an LED strip that does not
+  // have the extra 5-bit brightness register.  You will notice
+  // that roughly the first third of the LED strip turns off
+  // because the brightness8Bit equals zero.
+  //brightness = 31;
+
+  // Set brightness8Bit to be power divided by brightness5Bit,
+  // rounded to the nearest whole number.
+  uint8_t brightness8Bit = (power + (brightness5Bit / 2)) / brightness5Bit;
+
+  // Send the white color to the LED strip.  At this point,
+  // brightness8Bit multiplied by brightness5Bit should be
+  // approximately equal to power.
+  ledStrip.sendColor(brightness8Bit, brightness8Bit, brightness8Bit, brightness5Bit);
+}
+
+
 
 int button_press(String button_num) {
 
-  
   display.setCursor(0, 0);
   display.clearDisplay();
   display.display();
-
-  
 
   digitalWrite(switchPin1, HIGH);  // UP
   digitalWrite(switchPin2, HIGH);  // DOWN
@@ -187,6 +164,16 @@ int button_press(String button_num) {
       ledCallback();
       return 0; 
     }
+    if (mymenu.page == 2 && mymenu.inv == 2) {
+      mymenu.ledpattern = 2;
+      ledCallback();
+      return 0; 
+    }
+    if (mymenu.page == 2 && mymenu.inv == 3) {
+      mymenu.ledpattern = 3;
+      ledCallback();
+      return 0; 
+    }
   }
 
 }
@@ -196,14 +183,9 @@ void ledCallback() {
   if (mymenu.ledpattern == 1) {
     cyberPolice();
   }
+  
   if (mymenu.ledpattern == 2) {
-    uint8_t time = millis() >> 4;
-    for(uint16_t i = 0; i < ledCount; i++) {
-      uint8_t p = time - i * 8;
-      colors[i] = hsvToRgb((uint32_t)p * 359 / 256, 255, 255);
-    }
-    ledStrip.write(colors, ledCount, brightness);
-    delay(10);
+    rainbow();
   }
 
   // send increasing white only
@@ -217,7 +199,150 @@ void ledCallback() {
     }
     ledStrip.endFrame(ledCount);
   }
- 
+
+  // turn off leds
+  if (mymenu.ledpattern == 4) {
+    for(uint16_t i = 0; i < ledCount; i++) {
+      colors[i] = hsvToRgb(0,0,0);
+    }
+    ledStrip.write(colors, ledCount, 0);
+  }
+}
+
+
+void cyberPolice() {
+  mymenu.myText = " CYBER\nPOLICE";
+  int loop = 1;
+  
+  while (loop = 1) {
+  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("1");
+    break;
+  } else if (digitalRead(switchPin2) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("2");
+    break;
+  } else if (digitalRead(switchPin3) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    loop = 0;
+    button_press("3");
+    break;
+  } else if (digitalRead(switchPin4) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("4");
+    break;
+  } else {
+    display.setTextSize(3);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0); 
+    display.println(mymenu.myText);
+    display.display();
+  }
+  
+  for(uint16_t i = 0; i < ledCount; i++)
+  {
+    
+    if (i%2 == 0) {
+      //uint8_t x = time - i * 8;
+      colors[i].red = 0;
+      colors[i].green = 0;
+      colors[i].blue = 255;
+    } else {
+      colors[i].red = 0;
+      colors[i].green = 255;
+      colors[i].blue = 0;
+    }
+    
+  }  
+  ledStrip.write(colors, ledCount, 10);
+  delay(200);
+  
+  for(uint16_t i = 0; i < ledCount; i++)
+    if (i%2 != 0) {
+      //uint8_t x = time - i * 8;
+      colors[i].red = 0;
+      colors[i].green = 0;
+      colors[i].blue = 255;
+    } else {
+      colors[i].red = 0;
+      colors[i].green = 255;
+      colors[i].blue = 0;
+    }
+  ledStrip.write(colors, ledCount, 5);
+  delay(200);
+  }
+}
+
+void rainbow() {
+  mymenu.myText = "Laissez\n les bon temps\n roulez";
+
+  int loop = 1;
+  
+  while (loop = 1) {
+  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("1");
+    break;
+  } else if (digitalRead(switchPin2) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("2");
+    break;
+  } else if (digitalRead(switchPin3) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    loop = 0;
+    button_press("3");
+    break;
+  } else if (digitalRead(switchPin4) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("4");
+    break;
+  } else {
+    display.setTextSize(2);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0); 
+    display.println(mymenu.myText);
+    display.display();
+  }
+  
+  uint8_t time = millis() >> 4;
+  for(uint16_t i = 0; i < ledCount; i++) {
+    uint8_t p = time - i * 8;
+    colors[i] = hsvToRgb((uint32_t)p * 359 / 256, 255, 255);
+  }
+  ledStrip.write(colors, ledCount, brightness);
+  delay(10);
+  }
 }
 
 void setup() {
@@ -260,8 +385,10 @@ void setup() {
 }
 
 void show_menu (){
+  
   display.setTextSize(1);
-   // display page
+  
+   // display main menu page
   if (mymenu.page == 1) {
     display.setCursor(0, 0);
     if (mymenu.inv == 1) {
@@ -296,6 +423,7 @@ void show_menu (){
     display.display();
   }
 
+  // all the bling
   if (mymenu.page == 2) {
     display.setCursor(0, 0);
     if (mymenu.inv == 1) {
@@ -336,7 +464,34 @@ void show_menu (){
     //display.println(mymenu.inv);
     display.display();
   }
+
+  // network
+  if (mymenu.page == 3) {
+    display.setCursor(0, 0);
+    if (mymenu.inv == 1) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("wifi scanner");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("wifi scanner");
+    }
+    //display.println(mymenu.inv);
+    display.display();
+  }
   
+  //games games games
+  if (mymenu.page == 4) {
+    display.setCursor(0, 0);
+    if (mymenu.inv == 1) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("burgess pong");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("burgess pong");
+    }
+    //display.println(mymenu.inv);
+    display.display();
+  }
 }
 void loop() {
 
@@ -356,54 +511,110 @@ void loop() {
     show_menu();
 }
 
-/* Converts a color from HSV to RGB.
- * h is hue, as a number between 0 and 360.
- * s is the saturation, as a number between 0 and 255.
- * v is the value, as a number between 0 and 255. */
-rgb_color hsvToRgb(uint16_t h, uint8_t s, uint8_t v)
-{
-    uint8_t f = (h % 60) * 255 / 60;
-    uint8_t p = (255 - s) * (uint16_t)v / 255;
-    uint8_t q = (255 - f * (uint16_t)s / 255) * (uint16_t)v / 255;
-    uint8_t t = (255 - (255 - f) * (uint16_t)s / 255) * (uint16_t)v / 255;
-    uint8_t r = 0, g = 0, b = 0;
-    switch((h / 60) % 6){
-        case 0: r = v; g = t; b = p; break;
-        case 1: r = q; g = v; b = p; break;
-        case 2: r = p; g = v; b = t; break;
-        case 3: r = p; g = q; b = v; break;
-        case 4: r = t; g = p; b = v; break;
-        case 5: r = v; g = p; b = q; break;
+void burgess_pong() {
+   unsigned long start = millis();
+
+    //pinMode(UP_BUTTON, INPUT);
+    //pinMode(DOWN_BUTTON, INPUT);
+
+    display.clearDisplay();
+    drawCourt();
+
+    while(millis() - start < 2000);
+
+    display.display();
+
+    ball_update = millis();
+    paddle_update = ball_update;  
+
+    while (1) {
+          bool update = false;
+    unsigned long time = millis();
+
+    static bool up_state = false;
+    static bool down_state = false;
+    
+    up_state |= (digitalRead(switchPin1) == LOW);
+    down_state |= (digitalRead(switchPin2) == LOW);
+
+    if(time > ball_update) {
+        uint8_t new_x = ball_x + ball_dir_x;
+        uint8_t new_y = ball_y + ball_dir_y;
+
+        // Check if we hit the vertical walls
+        if(new_x == 0 || new_x == 127) {
+            ball_dir_x = -ball_dir_x;
+            new_x += ball_dir_x + ball_dir_x;
+        }
+
+        // Check if we hit the horizontal walls.
+        if(new_y == 0 || new_y == 63) {
+            ball_dir_y = -ball_dir_y;
+            new_y += ball_dir_y + ball_dir_y;
+        }
+
+        // Check if we hit the CPU paddle
+        if(new_x == CPU_X && new_y >= cpu_y && new_y <= cpu_y + PADDLE_HEIGHT) {
+            ball_dir_x = -ball_dir_x;
+            new_x += ball_dir_x + ball_dir_x;
+        }
+
+        // Check if we hit the player paddle
+        if(new_x == PLAYER_X
+           && new_y >= player_y
+           && new_y <= player_y + PADDLE_HEIGHT)
+        {
+            ball_dir_x = -ball_dir_x;
+            new_x += ball_dir_x + ball_dir_x;
+        }
+
+        display.drawPixel(ball_x, ball_y, BLACK);
+        display.drawPixel(new_x, new_y, WHITE);
+        ball_x = new_x;
+        ball_y = new_y;
+
+        ball_update += BALL_RATE;
+
+        update = true;
     }
-    return rgb_color(r, g, b);
+
+    if(time > paddle_update) {
+        paddle_update += PADDLE_RATE;
+
+        // CPU paddle
+        display.drawFastVLine(CPU_X, cpu_y, PADDLE_HEIGHT, BLACK);
+        const uint8_t half_paddle = PADDLE_HEIGHT >> 1;
+        if(cpu_y + half_paddle > ball_y) {
+            cpu_y -= 1;
+        }
+        if(cpu_y + half_paddle < ball_y) {
+            cpu_y += 1;
+        }
+        if(cpu_y < 1) cpu_y = 1;
+        if(cpu_y + PADDLE_HEIGHT > 63) cpu_y = 63 - PADDLE_HEIGHT;
+        display.drawFastVLine(CPU_X, cpu_y, PADDLE_HEIGHT, WHITE);
+
+        // Player paddle
+        display.drawFastVLine(PLAYER_X, player_y, PADDLE_HEIGHT, BLACK);
+        if(up_state) {
+            player_y -= 1;
+        }
+        if(down_state) {
+            player_y += 1;
+        }
+        up_state = down_state = false;
+        if(player_y < 1) player_y = 1;
+        if(player_y + PADDLE_HEIGHT > 63) player_y = 63 - PADDLE_HEIGHT;
+        display.drawFastVLine(PLAYER_X, player_y, PADDLE_HEIGHT, WHITE);
+
+        update = true;
+    }
+
+    if(update)
+        display.display();
+    }
 }
 
-
-// This function sends a white color with the specified power,
-// which should be between 0 and 7905.
-void sendWhite(uint16_t power)
-{
-  // Choose the lowest possible 5-bit brightness that will work.
-  uint8_t brightness5Bit = 1;
-  while(brightness5Bit * 255 < power && brightness5Bit < 31)
-  {
-    brightness5Bit++;
-  }
-
-  // Uncomment this line to simulate an LED strip that does not
-  // have the extra 5-bit brightness register.  You will notice
-  // that roughly the first third of the LED strip turns off
-  // because the brightness8Bit equals zero.
-  //brightness = 31;
-
-  // Set brightness8Bit to be power divided by brightness5Bit,
-  // rounded to the nearest whole number.
-  uint8_t brightness8Bit = (power + (brightness5Bit / 2)) / brightness5Bit;
-
-  // Send the white color to the LED strip.  At this point,
-  // brightness8Bit multiplied by brightness5Bit should be
-  // approximately equal to power.
-  ledStrip.sendColor(brightness8Bit, brightness8Bit, brightness8Bit, brightness5Bit);
+void drawCourt() {
+    display.drawRect(0, 0, 128, 64, WHITE);
 }
-
-
