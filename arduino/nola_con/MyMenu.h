@@ -33,16 +33,16 @@
 
 class MyMenu{
   public:
-    MyMenu();
-    ~MyMenu();
+    //MyMenu();
+    //~MyMenu();
 
-    // Change this to your handle
     const String myHandle = "@nola_con";
-    uint8_t currentMenu;
-    uint8_t high_lit;
+    String myText; 
+    int page;  // page number
+    int inv;   // which menu item to invert
+    int total; //total menu items on page
+    int ledpattern;
     
-    void begin();  
-    char* getMyMenu();
 };
 
 #endif //MY_MENU_H

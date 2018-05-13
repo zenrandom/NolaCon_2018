@@ -13,21 +13,10 @@
 #include "MyMenu.h"
 
 // class constructor
-MyMenu::MyMenu() {
-  currentMenu = 0;   
-  high_lit = 0;
-}
+//MyMenu::MyMenu() { }
 
 //<<destructor>>
-MyMenu::~MyMenu(){/*nothing to destruct*/}
+//MyMenu::~MyMenu(){/*nothing to destruct*/}
 
-void MyMenu::begin(){
-  Serial.println( "Called MyMenu::begin" );
-}
 
-char* MyMenu::getMyMenu() {
-  char *mymenu = (char*)malloc(1);
-  strcpy(mymenu, "bling");
-  strcpy(mymenu, "\ngames\nnetwork");
-  return mymenu;
-}
+

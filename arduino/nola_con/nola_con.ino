@@ -10,7 +10,6 @@
  * Date   : March 31, 2018
  * Version: 0.4
  */
-
 #include "Adafruit_GFX.h"
 #include "Adafruit_SSD1306.h"
 #include <APA102.h>
@@ -32,61 +31,51 @@ APA102<dataPin, clockPin> ledStrip;
 rgb_color colors[ledCount];
 
 Thread ledThread = Thread();
-Thread buttonThread = Thread();
+//Thread screenThread = Thread();
+//Thread buttonThread = Thread();
+//ButtonThread btn1Thread(switchPin1, 3000);
+//ButtonThread btn2Thread(switchPin2, 5000);
+//ButtonThread btn3Thread(switchPin3, 3000);;
+//ButtonThread btn4Thread(switchPin4, 3000);;
 
-// initialize states of things
-String myText = "default"; 
-int page = 1;  // page number
-int inv = 1;   // which menu item to invert
-int total = 5; //total menu items on page
-
-/*
- * Check if any button was pressed
- */
-void buttonCallback() {
-  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-    button_press("1");
-  } 
-  if (digitalRead(switchPin2) == LOW) {
-    button_press("2");
-  } 
-  if (digitalRead(switchPin3) == LOW) {
-    button_press("3");
-  } 
-  if (digitalRead(switchPin4) == LOW) {
-    button_press("4");
-  }
-
-}
-void ledCallback() {
-  cyberPolice();
-    
- /*
-  uint8_t time = millis() >> 4;
-  for(uint16_t i = 0; i < ledCount; i++) {
-    uint8_t p = time - i * 8;
-    colors[i] = hsvToRgb((uint32_t)p * 359 / 256, 255, 255);
-  }
-  ledStrip.write(colors, ledCount, brightness);
-  delay(10);
- 
-
-  // send increasing white only
-  if (myPattern = 1) {  
-    ledStrip.startFrame();
-    float power = minPower;
-    for(uint16_t i = 0; i < ledCount; i++)
-    {
-      sendWhite(power);
-      power = power * multiplier;
-    }
-    ledStrip.endFrame(ledCount);
-  }
-*/  
-}
 
 void cyberPolice() {
-  myText = " CYBER\nPOLICE";
+  mymenu.myText = " CYBER\nPOLICE";
+  int loop = 1;
+  
+  while (loop = 1) {
+  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    button_press("1");
+    break;
+  } else if (digitalRead(switchPin2) == LOW) {
+        mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    button_press("2");
+    break;
+  } else if (digitalRead(switchPin3) == LOW) {
+        mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    button_press("3");
+    break;
+  } else if (digitalRead(switchPin4) == LOW) {
+        mymenu.inv == 1;
+    mymenu.page == 1;
+    loop = 0;
+    button_press("4");
+    break;
+  } else {
+    display.setTextSize(3);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0); 
+    display.println(mymenu.myText);
+    display.display();
+  }
+  
   for(uint16_t i = 0; i < ledCount; i++)
   {
     
@@ -118,49 +107,119 @@ void cyberPolice() {
     }
   ledStrip.write(colors, ledCount, 5);
   delay(200);
+  }
 }
 
 int button_press(String button_num) {
+
+  
+  display.setCursor(0, 0);
+  display.clearDisplay();
+  display.display();
+
+  
+
+  digitalWrite(switchPin1, HIGH);  // UP
+  digitalWrite(switchPin2, HIGH);  // DOWN
+  digitalWrite(switchPin3, HIGH);  // BACK
+  digitalWrite(switchPin4, HIGH);  // ENTER
   
   int my_butt = button_num.toInt();
 
   // UP button pressed
   if (my_butt == 1) {
-    // up button pressed but already at top
-    if (inv == 1) {
+    if (mymenu.inv == 1) {
+      // up button pressed but already at top
       return 0;
     } else {
-      inv--;
+      mymenu.inv -= 1;
+      return 0;
     }
   }
 
   // DOWN button pressed
   if (my_butt == 2) {
-    if (total < inv) {
-      inv++;
-    } else {
-      // already on last menu item
-      return 0;
+    if (mymenu.inv < mymenu.total) {
+      mymenu.inv++;
     }
+    return 0;
   }
 
   // BACK button pressed
   if (my_butt == 3) {
-    
+    if (mymenu.page > 1 &&  mymenu.page < 6) 
+    {
+      
+      mymenu.page = 1;
+      return 0;
+    }
   }
 
   // enter button pressed
   if (my_butt == 4) {
-    
-  }
-  
-  digitalWrite(switchPin1, HIGH);  // UP
-  digitalWrite(switchPin2, HIGH);  // DOWN
-  digitalWrite(switchPin3, HIGH);  // BACK
-  digitalWrite(switchPin4, HIGH);  // ENTER
 
+    if (mymenu.page == 1 && mymenu.inv == 1) {
+       // page 2 (bling)
+       mymenu.page++;
+       return 0;
+    }
+    if (mymenu.page == 1 && mymenu.inv == 2) {
+       // page 3 (network)
+       mymenu.page = 3;
+       mymenu.inv = 1;
+       return 0;
+    }
+    if (mymenu.page == 1 && mymenu.inv == 3) {
+      // page 4 (games)
+       mymenu.page = 4;
+       mymenu.inv = 1;
+       return 0;
+    }
+    if (mymenu.page == 1 && mymenu.inv == 4) {
+      // page 5 (about)
+       mymenu.page = 5;
+       mymenu.inv = 1;
+       return 0;
+    }
+
+    if (mymenu.page == 2 && mymenu.inv == 1) {
+      mymenu.ledpattern = 1;
+      ledCallback();
+      return 0; 
+    }
+  }
 
 }
+
+void ledCallback() {
+
+  if (mymenu.ledpattern == 1) {
+    cyberPolice();
+  }
+  if (mymenu.ledpattern == 2) {
+    uint8_t time = millis() >> 4;
+    for(uint16_t i = 0; i < ledCount; i++) {
+      uint8_t p = time - i * 8;
+      colors[i] = hsvToRgb((uint32_t)p * 359 / 256, 255, 255);
+    }
+    ledStrip.write(colors, ledCount, brightness);
+    delay(10);
+  }
+
+  // send increasing white only
+  if (mymenu.ledpattern == 3) {  
+    ledStrip.startFrame();
+    float power = minPower;
+    for(uint16_t i = 0; i < ledCount; i++)
+    {
+      sendWhite(power);
+      power = power * multiplier;
+    }
+    ledStrip.endFrame(ledCount);
+  }
+ 
+}
+
 void setup() {
 
   // initialize with the I2C addr 0x3C (for the 128x32)
@@ -185,113 +244,116 @@ void setup() {
   display.clearDisplay();
   display.display();
 
-  // set up the buttons
-  pinMode(switchPin1, INPUT_PULLUP);    // Set the switch pin as input
-  digitalWrite(switchPin1, HIGH); // turn on pull up resistor
-  pinMode(switchPin2, INPUT_PULLUP);
-  digitalWrite(switchPin2, HIGH);
-  pinMode(switchPin3, INPUT_PULLUP);
-  digitalWrite(switchPin3, HIGH);
-  pinMode(switchPin4, INPUT_PULLUP);
-  digitalWrite(switchPin4, HIGH);
-  pinMode(LED_BUILTIN, OUTPUT); // initialize the on-board LED
-  digitalWrite(LED_BUILTIN, HIGH);  // turn LED off
+  pinMode(switchPin1,INPUT_PULLUP);
+  pinMode(switchPin2,INPUT_PULLUP);
+  pinMode(switchPin3,INPUT_PULLUP);
+  pinMode(switchPin4,INPUT_PULLUP);
+
+  mymenu.inv = 1; 
+  mymenu.page = 1;
+  mymenu.total = 4;
 
   // Configure myThread
   ledThread.onRun(ledCallback);
   ledThread.setInterval(500);
 
-  // Configure buttonThread
-  buttonThread.onRun(buttonCallback);
-  buttonThread.setInterval(250);
-   
-  // Adds threads to the controller
-  controll.add(&ledThread);
-  controll.add(&buttonThread);
-
 }
 
+void show_menu (){
+  display.setTextSize(1);
+   // display page
+  if (mymenu.page == 1) {
+    display.setCursor(0, 0);
+    if (mymenu.inv == 1) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("bling");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("bling");
+    }
+    if (mymenu.inv == 2) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("network");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("network");
+    }
+    if (mymenu.inv == 3) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("games");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("games");
+    }  
+    if (mymenu.inv == 4) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("about");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("about");
+    }
+    //display.println(mymenu.inv);
+    display.display();
+  }
+
+  if (mymenu.page == 2) {
+    display.setCursor(0, 0);
+    if (mymenu.inv == 1) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("Cyber Police");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("Cyber Police");
+    }
+    if (mymenu.inv == 2) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("rainbow");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("rainbow");
+    }
+    if (mymenu.inv == 3) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("white");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("white");
+    }  
+    if (mymenu.inv == 4) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("xmas");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("xmas");
+    }
+    if (mymenu.inv == 5) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("next");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("next");
+    }
+    //display.println(mymenu.inv);
+    display.display();
+  }
+  
+}
 void loop() {
+
   controll.run();
-
-
-  
-  // display page
-  if (page == 1) {
-    display.setCursor(0, 0);
-    if (inv == 1) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("bling");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("bling");
-    }
-    if (inv == 2) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("network");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("network");
-    }
-    if (inv == 3) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("games");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("games");
-    }  
-    if (inv == 4) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("about");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("about");
-    }
-    if (inv == 5) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("next");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("next");
-    }
-    display.println(inv);
-    display.display();
+  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+    button_press("1");
+  } else if (digitalRead(switchPin2) == LOW) {
+    button_press("2");
+  } else if (digitalRead(switchPin3) == LOW) {
+    button_press("3");
+  } else if (digitalRead(switchPin4) == LOW) {
+    button_press("4");
+  } else {
+    //do nothing
   }
-
-  if (page == 2) {
-    display.setCursor(0, 0);
-    if (inv == 1) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("cybercop");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("cybercop");
-    }
-    if (inv == 2) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("rainbow");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("rainbow");
-    }
-    if (inv == 3) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("white");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("white");
-    }  
-    if (inv == 4) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("about");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("about");
-    }
-    display.display();
-  }
-  
-
+    
+    show_menu();
 }
 
 /* Converts a color from HSV to RGB.
