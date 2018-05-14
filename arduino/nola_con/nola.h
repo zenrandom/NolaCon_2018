@@ -41,13 +41,29 @@ int switchPin2 = D4;        // DOWN
 int switchPin3 = D7;        // BACK
 int switchPin4 = D10;       // ENTER
 
+// function headers
+
+void show_menu();
+int button_press(String);
+int break_butts();
+void ledCallback();
+void cyberPolice();
+void rainbow(); 
+void ytCracker();
+void gradient();
+void burgess_pong();
+void drawCourt();
+void about();
+rgb_color hsvToRgb(uint16_t, uint8_t, uint8_t);
+void sendWhite(uint16_t);
+
+
+
 // ******************* game *********************
 // shamelssly stolen from:  https://github.com/eholk/Arduino-Pong/blob/master/pong.ino
 const unsigned long PADDLE_RATE = 33;
 const unsigned long BALL_RATE = 16;
 const uint8_t PADDLE_HEIGHT = 24;
-void drawCourt();
-void burgess_pong();
 
 uint8_t ball_x = 64, ball_y = 32;
 uint8_t ball_dir_x = 1, ball_dir_y = 1;

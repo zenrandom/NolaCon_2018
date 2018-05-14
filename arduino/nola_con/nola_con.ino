@@ -34,379 +34,8 @@ Thread ledThread = Thread();
 //Thread buttonThread = Thread();
 //ButtonThread btn1Thread(switchPin1, 3000);
 //ButtonThread btn2Thread(switchPin2, 5000);
-//ButtonThread btn3Thread(switchPin3, 3000);;
-//ButtonThread btn4Thread(switchPin4, 3000);;
-
-/* Converts a color from HSV to RGB.
-   h is hue, as a number between 0 and 360.
-   s is the saturation, as a number between 0 and 255.
-   v is the value, as a number between 0 and 255. */
-rgb_color hsvToRgb(uint16_t h, uint8_t s, uint8_t v)
-{
-  uint8_t f = (h % 60) * 255 / 60;
-  uint8_t p = (255 - s) * (uint16_t)v / 255;
-  uint8_t q = (255 - f * (uint16_t)s / 255) * (uint16_t)v / 255;
-  uint8_t t = (255 - (255 - f) * (uint16_t)s / 255) * (uint16_t)v / 255;
-  uint8_t r = 0, g = 0, b = 0;
-  switch ((h / 60) % 6) {
-    case 0: r = v; g = t; b = p; break;
-    case 1: r = q; g = v; b = p; break;
-    case 2: r = p; g = v; b = t; break;
-    case 3: r = p; g = q; b = v; break;
-    case 4: r = t; g = p; b = v; break;
-    case 5: r = v; g = p; b = q; break;
-  }
-  return rgb_color(r, g, b);
-}
-
-
-// This function sends a white color with the specified power,
-// which should be between 0 and 7905.
-void sendWhite(uint16_t power)
-{
-  // Choose the lowest possible 5-bit brightness that will work.
-  uint8_t brightness5Bit = 1;
-  while (brightness5Bit * 255 < power && brightness5Bit < 31)
-  {
-    brightness5Bit++;
-  }
-
-  // Uncomment this line to simulate an LED strip that does not
-  // have the extra 5-bit brightness register.  You will notice
-  // that roughly the first third of the LED strip turns off
-  // because the brightness8Bit equals zero.
-  //brightness = 31;
-
-  // Set brightness8Bit to be power divided by brightness5Bit,
-  // rounded to the nearest whole number.
-  uint8_t brightness8Bit = (power + (brightness5Bit / 2)) / brightness5Bit;
-
-  // Send the white color to the LED strip.  At this point,
-  // brightness8Bit multiplied by brightness5Bit should be
-  // approximately equal to power.
-  ledStrip.sendColor(brightness8Bit, brightness8Bit, brightness8Bit, brightness5Bit);
-}
-
-int button_press(String button_num) {
-
-  display.setCursor(0, 0);
-  display.clearDisplay();
-  display.display();
-
-  digitalWrite(switchPin1, HIGH);  // UP
-  digitalWrite(switchPin2, HIGH);  // DOWN
-  digitalWrite(switchPin3, HIGH);  // BACK
-  digitalWrite(switchPin4, HIGH);  // ENTER
-
-  int my_butt = button_num.toInt();
-
-  // UP button pressed
-  if (my_butt == 1) {
-    if (mymenu.inv == 1) {
-      // up button pressed but already at top
-      return 0;
-    } else {
-      mymenu.inv -= 1;
-      return 0;
-    }
-  }
-
-  // DOWN button pressed
-  if (my_butt == 2) {
-    if (mymenu.inv < mymenu.total) {
-      mymenu.inv++;
-    }
-    return 0;
-  }
-
-  // BACK button pressed
-  if (my_butt == 3) {
-    if (mymenu.page > 1 &&  mymenu.page < 6)
-    {
-
-      mymenu.page = 1;
-      return 0;
-    }
-  }
-
-  // enter button pressed
-  if (my_butt == 4) {
-
-    if (mymenu.page == 1 && mymenu.inv == 1) {
-      // page 2 (bling)
-      mymenu.page++;
-      return 0;
-    }
-    if (mymenu.page == 1 && mymenu.inv == 2) {
-      // page 3 (network)
-      mymenu.page = 3;
-      mymenu.inv = 1;
-      return 0;
-    }
-    if (mymenu.page == 1 && mymenu.inv == 3) {
-      // page 4 (games)
-      mymenu.page = 4;
-      mymenu.inv = 1;
-      return 0;
-    }
-    if (mymenu.page == 1 && mymenu.inv == 4) {
-      // call the about() function
-      about();
-      return 0;
-    }
-
-    if (mymenu.page == 2 && mymenu.inv == 1) {
-      mymenu.ledpattern = 1;
-      ledCallback();
-      return 0;
-    }
-    if (mymenu.page == 2 && mymenu.inv == 2) {
-      mymenu.ledpattern = 2;
-      ledCallback();
-      return 0;
-    }
-    if (mymenu.page == 2 && mymenu.inv == 3) {
-      mymenu.ledpattern = 3;
-      ledCallback();
-      return 0;
-    }
-
-    // wireless scanner
-    if (mymenu.page == 3 && mymenu.inv == 1) {
-
-      return 0;
-    }
-
-    // burgess_pong()
-    if (mymenu.page == 4 && mymenu.inv == 1) {
-      burgess_pong();
-      return 0;
-    }
-
-  }
-
-}
-
-void ledCallback() {
-
-  if (mymenu.ledpattern == 1) {
-    cyberPolice();
-  }
-
-  if (mymenu.ledpattern == 2) {
-    rainbow();
-  }
-
-  // send increasing white only
-  if (mymenu.ledpattern == 3) {
-    ytCracker();
-  }
-
-  // turn off leds
-  if (mymenu.ledpattern == 4) {
-    for (uint16_t i = 0; i < ledCount; i++) {
-      colors[i] = hsvToRgb(0, 0, 0);
-    }
-    ledStrip.write(colors, ledCount, 0);
-  }
-}
-
-
-void cyberPolice() {
-  mymenu.myText = " CYBER\nPOLICE";
-  int loop = 1;
-
-  while (loop = 1) {
-    if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("1");
-      yield();
-      break;
-    } else if (digitalRead(switchPin2) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("2");
-      yield();
-      break;
-    } else if (digitalRead(switchPin3) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      loop = 0;
-      button_press("3");
-      yield();
-      break;
-    } else if (digitalRead(switchPin4) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("4");
-      yield();
-      break;
-    } else {
-      display.setTextSize(3);
-      display.setTextColor(WHITE);
-      display.setCursor(0, 0);
-      display.println(mymenu.myText);
-      display.display();
-    }
-
-    for (uint16_t i = 0; i < ledCount; i++)
-    {
-
-      if (i % 2 == 0) {
-        //uint8_t x = time - i * 8;
-        colors[i].red = 0;
-        colors[i].green = 0;
-        colors[i].blue = 255;
-      } else {
-        colors[i].red = 0;
-        colors[i].green = 255;
-        colors[i].blue = 0;
-      }
-
-    }
-    ledStrip.write(colors, ledCount, 10);
-    delay(200);
-
-    for (uint16_t i = 0; i < ledCount; i++)
-      if (i % 2 != 0) {
-        //uint8_t x = time - i * 8;
-        colors[i].red = 0;
-        colors[i].green = 0;
-        colors[i].blue = 255;
-      } else {
-        colors[i].red = 0;
-        colors[i].green = 255;
-        colors[i].blue = 0;
-      }
-    ledStrip.write(colors, ledCount, 5);
-    delay(200);
-  }
-}
-
-void rainbow() {
-  mymenu.myText = "   Laissez\n   les bon\n     temps\n    roulez";
-
-  int loop = 1;
-
-  while (loop = 1) {
-    if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("1");
-      break;
-    } else if (digitalRead(switchPin2) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("2");
-      break;
-    } else if (digitalRead(switchPin3) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      loop = 0;
-      button_press("3");
-      break;
-    } else if (digitalRead(switchPin4) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("4");
-      break;
-    } else {
-      display.setTextSize(2);
-      display.setTextColor(WHITE);
-      display.setCursor(0, 0);
-      display.println(mymenu.myText);
-      display.display();
-    }
-
-    uint8_t time = millis() >> 4;
-    for (uint16_t i = 0; i < ledCount; i++) {
-      uint8_t p = time - i * 8;
-      colors[i] = hsvToRgb((uint32_t)p * 359 / 256, 255, 255);
-    }
-    ledStrip.write(colors, ledCount, brightness);
-    delay(10);
-  }
-}
-
-void ytCracker() {
-
-  mymenu.myText = "   Laissez\n   les bon\n     temps\n    roulez";
-
-  int loop = 1;
-
-  while (loop = 1) {
-    if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("1");
-      break;
-    } else if (digitalRead(switchPin2) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("2");
-      break;
-    } else if (digitalRead(switchPin3) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      loop = 0;
-      button_press("3");
-      break;
-    } else if (digitalRead(switchPin4) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      loop = 0;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("4");
-      break;
-    } else {
-      display.setTextSize(2);
-      display.setTextColor(WHITE);
-      display.setCursor(0, 0);
-      display.println(mymenu.myText);
-      display.display();
-    }
-    ledStrip.startFrame();
-    float power = minPower;
-    for (uint16_t i = 0; i < ledCount; i++)
-    {
-      sendWhite(power);
-      power = power * multiplier;
-    }
-    ledStrip.endFrame(ledCount);
-  }
-}
+//ButtonThread btn3Thread(switchPin3, 3000);
+//ButtonThread btn4Thread(switchPin4, 3000);
 
 void setup() {
 
@@ -439,12 +68,30 @@ void setup() {
 
   mymenu.inv = 1;
   mymenu.page = 1;
-  mymenu.total = 4;
+  mymenu.total = 3;
 
   // Configure myThread
   ledThread.onRun(ledCallback);
   ledThread.setInterval(500);
 
+}
+
+void loop() {
+
+  controll.run();
+  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+    button_press("1");
+  } else if (digitalRead(switchPin2) == LOW) {
+    button_press("2");
+  } else if (digitalRead(switchPin3) == LOW) {
+    button_press("3");
+  } else if (digitalRead(switchPin4) == LOW) {
+    button_press("4");
+  } else {
+    //do nothing
+  }
+
+  show_menu();
 }
 
 void show_menu () {
@@ -463,28 +110,30 @@ void show_menu () {
     }
     if (mymenu.inv == 2) {
       display.setTextColor(BLACK, WHITE);
-      display.println("network");
+      display.println("games");
       display.setTextColor(WHITE);
     } else {
-      display.println("network");
+      display.println("games");
     }
     if (mymenu.inv == 3) {
       display.setTextColor(BLACK, WHITE);
-      display.println("games");
+      display.println("about");
       display.setTextColor(WHITE);
     } else {
-      display.println("games");
+      display.println("about");
     }
-    if (mymenu.inv == 4) {
+    /*
+      if (mymenu.inv == 4) {
       display.setTextColor(BLACK, WHITE);
-      display.println("about");
+      display.println("network");
       display.setTextColor(WHITE);
-    } else {
-      display.println("about");
-    }
+      } else {
+      display.println("network");
+      }
+    */
     //display.println(mymenu.inv);
     display.display();
-  }
+  }  // page1
 
   // all the bling
   if (mymenu.page == 2) {
@@ -510,14 +159,14 @@ void show_menu () {
     } else {
       display.println("white");
     }
-    /*
-      if (mymenu.inv == 4) {
+    if (mymenu.inv == 4) {
       display.setTextColor(BLACK, WHITE);
-      display.println("xmas");
+      display.println("gradient");
       display.setTextColor(WHITE);
-      } else {
-      display.println("xmas");
-      }
+    } else {
+      display.println("gradient");
+    }
+    /*
       if (mymenu.inv == 5) {
       display.setTextColor(BLACK, WHITE);
       display.println("next");
@@ -526,54 +175,323 @@ void show_menu () {
       display.println("next");
       }
     */
-    //display.println(mymenu.inv);
     display.display();
-  }
+  }  // page2
 
-  // network
+  // games
   if (mymenu.page == 3) {
     display.setCursor(0, 0);
     if (mymenu.inv == 1) {
       display.setTextColor(BLACK, WHITE);
-      display.println("wifi scanner");
+      display.println("burgess pong");
       display.setTextColor(WHITE);
     } else {
-      display.println("wifi scanner");
+      display.println("burgess pong");
     }
-    //display.println(mymenu.inv);
     display.display();
   }
 
-  //games games games
-  if (mymenu.page == 4) {
+  /*
+    //network
+    if (mymenu.page == 4) {
     display.setCursor(0, 0);
     if (mymenu.inv == 1) {
       display.setTextColor(BLACK, WHITE);
-      display.println("burgess pong");
+      display.println("wifi scan");
       display.setTextColor(WHITE);
     } else {
-      display.println("burgess pong");
+      display.println("wifi scan");
     }
+    if (mymenu.inv == 1) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("mqtt");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("mqtt");
+    }
+
     //display.println(mymenu.inv);
     display.display();
+    }
+  */
+} // show_menu()
+
+int button_press(String button_num) {
+
+  display.setCursor(0, 0);
+  display.clearDisplay();
+  display.display();
+
+  digitalWrite(switchPin1, HIGH);  // UP
+  digitalWrite(switchPin2, HIGH);  // DOWN
+  digitalWrite(switchPin3, HIGH);  // BACK
+  digitalWrite(switchPin4, HIGH);  // ENTER
+
+  int my_butt = button_num.toInt();
+
+  // UP button pressed
+  if (my_butt == 1 && mymenu.inv > 1) {
+    mymenu.inv -= 1;
+    return 0;
+  }
+
+  // DOWN button pressed
+  if (my_butt == 2 && mymenu.inv < mymenu.total) {
+    mymenu.inv++;
+    return 0;
+  }
+
+  // BACK button pressed
+  if (my_butt == 3 && mymenu.page > 1) {
+    mymenu.page = 1;
+    return 0;
+  }
+
+  // enter button pressed
+  if (my_butt == 4) {
+    if (mymenu.page == 1 && mymenu.inv == 1) {
+      // page 2 (bling)
+      mymenu.page++;
+      mymenu.inv = 1;   // set to invert first item
+      mymenu.total = 4; // match number of items in bling menu
+      return 0;
+    }
+
+    if (mymenu.page == 1 && mymenu.inv == 2) {
+      // page 3 (games)
+      mymenu.page = 3;
+      mymenu.inv = 1;     // set to invert first item
+      mymenu.total = 1;  //match number of items in games menu
+      return 0;
+    }
+    if (mymenu.page == 1 && mymenu.inv == 3) {
+      // call the about() function
+      about();
+      return 0;
+    }
+
+    /*
+      if (mymenu.page == 1 && mymenu.inv == 4) {
+       // page 4 (network)
+       mymenu.page = 4;
+       mymenu.inv = 1;
+       return 0;
+      }
+    */
+
+    // ************* led pattern selection ***********
+    if (mymenu.page == 2 && mymenu.inv == 1) {
+      mymenu.ledpattern = 1;
+      ledCallback();
+      return 0;
+    }
+    if (mymenu.page == 2 && mymenu.inv == 2) {
+      mymenu.ledpattern = 2;
+      ledCallback();
+      return 0;
+    }
+    if (mymenu.page == 2 && mymenu.inv == 3) {
+      mymenu.ledpattern = 3;
+      ledCallback();
+      return 0;
+    }
+    if (mymenu.page == 2 && mymenu.inv == 4) {
+      mymenu.ledpattern = 5; // gradient pattern
+      ledCallback();
+      return 0;
+    }
+
+    // ************* game selection ***********
+    if (mymenu.page == 3 && mymenu.inv == 1) {
+      burgess_pong();
+      return 0;
+    }
+
+    // ************* network tool selection ***********
+    if (mymenu.page == 4 && mymenu.inv == 1) {
+      // wireless scanner
+      return 0;
+    }
+
+  }
+
+} // button_press()
+
+/*
+   The buttons will break you out of the current LED pattern
+*/
+
+int break_butts() {
+  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+    // reset menu
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    // turn off LED pattern
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("1");
+    return 1;
+  } else if (digitalRead(switchPin2) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("2");
+    return 1;
+  } else if (digitalRead(switchPin3) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("3");
+    return 1;
+  } else if (digitalRead(switchPin4) == LOW) {
+    mymenu.inv == 1;
+    mymenu.page == 1;
+    mymenu.ledpattern = 4;
+    ledCallback();
+    button_press("4");
+    return 1;
+  } else {
+    return 0;
+  }
+
+  //return 0;
+
+} //break_butts()
+
+void ledCallback() {
+
+  if (mymenu.ledpattern == 1) {
+    cyberPolice();
+  }
+
+  if (mymenu.ledpattern == 2) {
+    rainbow();
+  }
+
+  // send increasing white only
+  if (mymenu.ledpattern == 3) {
+    ytCracker();
+  }
+
+  // turn off leds
+  if (mymenu.ledpattern == 4) {
+    for (uint16_t i = 0; i < ledCount; i++) {
+      colors[i] = hsvToRgb(0, 0, 0);
+    }
+    ledStrip.write(colors, ledCount, 0);
+  }
+
+  // random solid colors
+  if (mymenu.ledpattern == 5) {
+    gradient();
+  }
+} // ledCallback()
+
+
+void cyberPolice() {
+  yield();
+  mymenu.myText = " CYBER\nPOLICE";
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.println(mymenu.myText);
+  display.display();
+
+  while (break_butts() == 0) {
+
+    for (uint16_t i = 0; i < ledCount; i++)
+    {
+      if (i % 2 == 0) {
+        //uint8_t x = time - i * 8;
+        colors[i].red = 0;
+        colors[i].green = 0;
+        colors[i].blue = 255;
+      } else {
+        colors[i].red = 0;
+        colors[i].green = 255;
+        colors[i].blue = 0;
+      }
+
+    }
+    ledStrip.write(colors, ledCount, 10);
+    delay(200);
+
+    for (uint16_t i = 0; i < ledCount; i++)
+      if (i % 2 != 0) {
+        //uint8_t x = time - i * 8;
+        colors[i].red = 0;
+        colors[i].green = 0;
+        colors[i].blue = 255;
+      } else {
+        colors[i].red = 0;
+        colors[i].green = 255;
+        colors[i].blue = 0;
+      }
+    ledStrip.write(colors, ledCount, 5);
+    delay(200);
   }
 }
-void loop() {
+void rainbow() {
+  yield();
+  mymenu.myText = "   Laissez\n   les bon\n     temps\n    roulez";
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.println(mymenu.myText);
+  display.display();
 
-  controll.run();
-  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-    button_press("1");
-  } else if (digitalRead(switchPin2) == LOW) {
-    button_press("2");
-  } else if (digitalRead(switchPin3) == LOW) {
-    button_press("3");
-  } else if (digitalRead(switchPin4) == LOW) {
-    button_press("4");
-  } else {
-    //do nothing
+  while (break_butts() == 0) {
+
+    uint8_t time = millis() >> 4;
+    for (uint16_t i = 0; i < ledCount; i++) {
+      uint8_t p = time - i * 8;
+      colors[i] = hsvToRgb((uint32_t)p * 359 / 256, 255, 255);
+    }
+    ledStrip.write(colors, ledCount, brightness);
+    delay(10);
   }
+}
 
-  show_menu();
+void ytCracker() {
+  yield();
+  mymenu.myText = "   Laissez\n   les bon\n     temps\n    roulez";
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.println(mymenu.myText);
+  display.display();
+
+  while (break_butts() == 0) {
+    ledStrip.startFrame();
+    float power = minPower;
+    for (uint16_t i = 0; i < ledCount; i++)
+    {
+      sendWhite(power);
+      power = power * multiplier;
+    }
+    ledStrip.endFrame(ledCount);
+  }
+}
+
+void gradient() {
+  yield();
+  mymenu.myText = "   Laissez\n   les bon\n     temps\n    roulez";
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.println(mymenu.myText);
+  display.display();
+
+  while (break_butts() == 0) {
+    uint8_t time = millis() >> 2;
+    for (uint16_t i = 0; i < ledCount; i++) {
+      uint8_t x = time - i * 8;
+      colors[i] = rgb_color(x, 255 - x, x);
+    }
+    ledStrip.write(colors, ledCount, brightness);
+  }
 }
 
 void burgess_pong() {
@@ -686,52 +604,75 @@ void drawCourt() {
 }
 
 void about() {
-  yield();
-  display.clearDisplay();
-  display.setTextSize(0.5);
-  display.setCursor(0, 0);
-  display.setTextColor(BLACK, WHITE);
-  display.println("Created by the\n DE:AD:10:C5\n");
-  display.setTextColor(WHITE);
-  display.println("Version: " + version );
-  display.println("\n@mzbat");
-  display.println("@p0lr_");
-  display.println("@theDevilsVoice");
-  display.display();
-
-  while (1) {
+  while (break_butts() == 0) {
     yield();
-    if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("1");
-      break;
-    } else if (digitalRead(switchPin2) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("2");
-      break;
-    } else if (digitalRead(switchPin3) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("3");
-      break;
-    } else if (digitalRead(switchPin4) == LOW) {
-      mymenu.inv == 1;
-      mymenu.page == 1;
-      mymenu.ledpattern = 4;
-      ledCallback();
-      button_press("4");
-      break;
-    } else {
-
-    }
+    display.clearDisplay();
+    display.setTextSize(0.5);
+    display.setCursor(0, 0);
+    display.setTextColor(BLACK, WHITE);
+    display.println("Created by the\n DE:AD:10:C5\n");
+    display.setTextColor(WHITE);
+    display.println("Version: " + version );
+    display.println("\n@mzbat");
+    display.println("@p0lr_");
+    display.println("@theDevilsVoice");
+    display.display();
   }
 }
+
+
+
+
+/* Converts a color from HSV to RGB.
+   h is hue, as a number between 0 and 360.
+   s is the saturation, as a number between 0 and 255.
+   v is the value, as a number between 0 and 255. */
+rgb_color hsvToRgb(uint16_t h, uint8_t s, uint8_t v)
+{
+  uint8_t f = (h % 60) * 255 / 60;
+  uint8_t p = (255 - s) * (uint16_t)v / 255;
+  uint8_t q = (255 - f * (uint16_t)s / 255) * (uint16_t)v / 255;
+  uint8_t t = (255 - (255 - f) * (uint16_t)s / 255) * (uint16_t)v / 255;
+  uint8_t r = 0, g = 0, b = 0;
+  switch ((h / 60) % 6) {
+    case 0: r = v; g = t; b = p; break;
+    case 1: r = q; g = v; b = p; break;
+    case 2: r = p; g = v; b = t; break;
+    case 3: r = p; g = q; b = v; break;
+    case 4: r = t; g = p; b = v; break;
+    case 5: r = v; g = p; b = q; break;
+  }
+  return rgb_color(r, g, b);
+}
+
+
+// This function sends a white color with the specified power,
+// which should be between 0 and 7905.
+void sendWhite(uint16_t power)
+{
+  // Choose the lowest possible 5-bit brightness that will work.
+  uint8_t brightness5Bit = 1;
+  while (brightness5Bit * 255 < power && brightness5Bit < 31)
+  {
+    brightness5Bit++;
+  }
+
+  // Uncomment this line to simulate an LED strip that does not
+  // have the extra 5-bit brightness register.  You will notice
+  // that roughly the first third of the LED strip turns off
+  // because the brightness8Bit equals zero.
+  //brightness = 31;
+
+  // Set brightness8Bit to be power divided by brightness5Bit,
+  // rounded to the nearest whole number.
+  uint8_t brightness8Bit = (power + (brightness5Bit / 2)) / brightness5Bit;
+
+  // Send the white color to the LED strip.  At this point,
+  // brightness8Bit multiplied by brightness5Bit should be
+  // approximately equal to power.
+  ledStrip.sendColor(brightness8Bit, brightness8Bit, brightness8Bit, brightness5Bit);
+}
+
+
+
 
