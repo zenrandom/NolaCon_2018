@@ -224,6 +224,7 @@ void cyberPolice() {
       mymenu.ledpattern = 4;
       ledCallback();
       button_press("1");
+      yield();
       break;
     } else if (digitalRead(switchPin2) == LOW) {
       mymenu.inv == 1;
@@ -232,6 +233,7 @@ void cyberPolice() {
       mymenu.ledpattern = 4;
       ledCallback();
       button_press("2");
+      yield();
       break;
     } else if (digitalRead(switchPin3) == LOW) {
       mymenu.inv == 1;
@@ -240,6 +242,7 @@ void cyberPolice() {
       ledCallback();
       loop = 0;
       button_press("3");
+      yield();
       break;
     } else if (digitalRead(switchPin4) == LOW) {
       mymenu.inv == 1;
@@ -248,6 +251,7 @@ void cyberPolice() {
       mymenu.ledpattern = 4;
       ledCallback();
       button_press("4");
+      yield();
       break;
     } else {
       display.setTextSize(3);
@@ -587,6 +591,7 @@ void burgess_pong() {
   paddle_update = ball_update;
 
   while (1) {
+    yield();
     bool update = false;
     unsigned long time = millis();
 
@@ -626,7 +631,9 @@ void burgess_pong() {
       }
 
       display.drawPixel(ball_x, ball_y, BLACK);
+      yield();
       display.drawPixel(new_x, new_y, WHITE);
+      yield();
       ball_x = new_x;
       ball_y = new_y;
 
@@ -636,6 +643,7 @@ void burgess_pong() {
     }
 
     if (time > paddle_update) {
+      yield();
       paddle_update += PADDLE_RATE;
 
       // CPU paddle
