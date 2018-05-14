@@ -1,7 +1,7 @@
 #ifndef NOLA_H
 #define NOLA_H
 
-#define VERSION "0.2"
+String version = "0.4";
 
 //SSD1306 display(0x3c, D2, D1);
 #define OLED_RESET 2
@@ -42,6 +42,7 @@ int switchPin3 = D7;        // BACK
 int switchPin4 = D10;       // ENTER
 
 // ******************* game *********************
+// shamelssly stolen from:  https://github.com/eholk/Arduino-Pong/blob/master/pong.ino
 const unsigned long PADDLE_RATE = 33;
 const unsigned long BALL_RATE = 16;
 const uint8_t PADDLE_HEIGHT = 24;
@@ -60,6 +61,17 @@ const uint8_t PLAYER_X = 115;
 uint8_t player_y = 16;
 
 // ******************* game *********************
+
+
+class MyMenu{
+  public:
+    const String myHandle = "@nola_con";
+    String myText; 
+    int page;  // page number
+    int inv;   // which menu item to invert
+    int total; //total menu items on page
+    int ledpattern;
+};
 
 // nola logo
 const unsigned char PROGMEM fdl_bmp1 [] = {
