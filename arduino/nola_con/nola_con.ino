@@ -10,15 +10,30 @@
    Date   : March 31, 2018
    Version: 0.4
 */
-#include "Adafruit_GFX.h"
-#include "Adafruit_SSD1306.h"
+
+ 
+#include <Arduino.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include <APA102.h>
 #include <Thread.h>
 #include <ThreadController.h>
 #include "nola.h"
+#include "MyGame.h"
 
 // Initialize instance of MyNetwork() class
 MyMenu mymenu;
+
+MyGame mygame;
+
+//SSD1306 display(0x3c, D2, D1);
+#define OLED_RESET 2
+Adafruit_SSD1306 display(OLED_RESET);
+
+//#if (SSD1306_LCDHEIGHT != 64)
+//#error("Height incorrect, please fix Adafruit_SSD1306.h!");
+//#endif
+//#define SSD1306_LCDHEIGHT = 64
 
 // ThreadController that will controll all threads
 ThreadController controll = ThreadController();
@@ -36,6 +51,8 @@ Thread ledThread = Thread();
 //ButtonThread btn2Thread(switchPin2, 5000);
 //ButtonThread btn3Thread(switchPin3, 3000);
 //ButtonThread btn4Thread(switchPin4, 3000);
+
+
 
 void setup() {
 
@@ -303,7 +320,7 @@ int button_press(String button_num) {
 
     // ************* game selection ***********
     if (mymenu.page == 3 && mymenu.inv == 1) {
-      burgess_pong();
+      mygame.burgess_pong(&display);
       return 0;
     }
 
@@ -494,115 +511,6 @@ void gradient() {
   }
 }
 
-void burgess_pong() {
-  unsigned long start = millis();
-  yield();
-
-  display.clearDisplay();
-  drawCourt();
-
-  while (millis() - start < 2000);
-
-  display.display();
-
-  ball_update = millis();
-  paddle_update = ball_update;
-
-  while (1) {
-    yield();
-    bool update = false;
-    unsigned long time = millis();
-
-    static bool up_state = false;
-    static bool down_state = false;
-
-    up_state |= (digitalRead(switchPin1) == LOW);
-    down_state |= (digitalRead(switchPin2) == LOW);
-
-    if (time > ball_update) {
-      uint8_t new_x = ball_x + ball_dir_x;
-      uint8_t new_y = ball_y + ball_dir_y;
-
-      // Check if we hit the vertical walls
-      if (new_x == 0 || new_x == 127) {
-        ball_dir_x = -ball_dir_x;
-        new_x += ball_dir_x + ball_dir_x;
-      }
-
-      // Check if we hit the horizontal walls.
-      if (new_y == 0 || new_y == 63) {
-        ball_dir_y = -ball_dir_y;
-        new_y += ball_dir_y + ball_dir_y;
-      }
-
-      // Check if we hit the CPU paddle
-      if (new_x == CPU_X && new_y >= cpu_y && new_y <= cpu_y + PADDLE_HEIGHT) {
-        ball_dir_x = -ball_dir_x;
-        new_x += ball_dir_x + ball_dir_x;
-      }
-
-      // Check if we hit the player paddle
-      if (new_x == PLAYER_X && new_y >= player_y && new_y <= player_y + PADDLE_HEIGHT)
-      {
-        ball_dir_x = -ball_dir_x;
-        new_x += ball_dir_x + ball_dir_x;
-      }
-
-      display.drawPixel(ball_x, ball_y, BLACK);
-      yield();
-      display.drawPixel(new_x, new_y, WHITE);
-      yield();
-      ball_x = new_x;
-      ball_y = new_y;
-
-      ball_update += BALL_RATE;
-
-      update = true;
-    }
-
-    if (time > paddle_update) {
-      yield();
-      paddle_update += PADDLE_RATE;
-
-      // CPU paddle
-      display.drawFastVLine(CPU_X, cpu_y, PADDLE_HEIGHT, BLACK);
-      const uint8_t half_paddle = PADDLE_HEIGHT >> 1;
-      if (cpu_y + half_paddle > ball_y) {
-        cpu_y -= 1;
-      }
-      if (cpu_y + half_paddle < ball_y) {
-        cpu_y += 1;
-      }
-      if (cpu_y < 1) cpu_y = 1;
-      if (cpu_y + PADDLE_HEIGHT > 63) cpu_y = 63 - PADDLE_HEIGHT;
-      display.drawFastVLine(CPU_X, cpu_y, PADDLE_HEIGHT, WHITE);
-
-      // Player paddle
-      display.drawFastVLine(PLAYER_X, player_y, PADDLE_HEIGHT, BLACK);
-      if (up_state) {
-        player_y -= 1;
-      }
-      if (down_state) {
-        player_y += 1;
-      }
-      up_state = down_state = false;
-      if (player_y < 1) player_y = 1;
-      if (player_y + PADDLE_HEIGHT > 63) player_y = 63 - PADDLE_HEIGHT;
-      display.drawFastVLine(PLAYER_X, player_y, PADDLE_HEIGHT, WHITE);
-
-      update = true;
-    }
-
-    if (update)
-      display.display();
-  }
-}
-
-void drawCourt() {
-  yield();
-  display.drawRect(0, 0, 128, 64, WHITE);
-}
-
 void about() {
   while (break_butts() == 0) {
     yield();
@@ -619,9 +527,6 @@ void about() {
     display.display();
   }
 }
-
-
-
 
 /* Converts a color from HSV to RGB.
    h is hue, as a number between 0 and 360.
