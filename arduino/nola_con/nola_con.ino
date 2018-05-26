@@ -7,11 +7,11 @@
 
 
    Author : @theDevilsVoice @p0lr_ @mzbat @dead10c5
-   Date   : March 31, 2018
-   Version: 0.4
+   Date   : May 26, 2018
+   Version: 0.5
 */
 
- 
+
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -20,10 +20,11 @@
 #include <ThreadController.h>
 #include "nola.h"
 #include "MyGame.h"
+#include "MyNetwork.h"
 
 // Initialize instance of MyNetwork() class
+MyNetwork mynetwork;
 MyMenu mymenu;
-
 MyGame mygame;
 
 //SSD1306 display(0x3c, D2, D1);
@@ -134,21 +135,18 @@ void show_menu () {
     }
     if (mymenu.inv == 3) {
       display.setTextColor(BLACK, WHITE);
+      display.println("network");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("network");
+    }
+    if (mymenu.inv == 4) {
+      display.setTextColor(BLACK, WHITE);
       display.println("about");
       display.setTextColor(WHITE);
     } else {
       display.println("about");
     }
-    /*
-      if (mymenu.inv == 4) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("network");
-      display.setTextColor(WHITE);
-      } else {
-      display.println("network");
-      }
-    */
-    //display.println(mymenu.inv);
     display.display();
   }  // page1
 
@@ -195,8 +193,36 @@ void show_menu () {
     display.display();
   }  // page2
 
-  // games
+  //network
   if (mymenu.page == 3) {
+    display.setCursor(0, 0);
+    if (mymenu.inv == 1) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("wifi scan");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("wifi scan");
+    }
+    if (mymenu.inv == 2) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("mqtt");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("mqtt");
+    }
+    if (mymenu.inv == 3) {
+      display.setTextColor(BLACK, WHITE);
+      display.println("desync");
+      display.setTextColor(WHITE);
+    } else {
+      display.println("desync");
+    }
+    //display.println(mymenu.inv);
+    display.display();
+  }
+
+  // games
+  if (mymenu.page == 4) {
     display.setCursor(0, 0);
     if (mymenu.inv == 1) {
       display.setTextColor(BLACK, WHITE);
@@ -208,29 +234,6 @@ void show_menu () {
     display.display();
   }
 
-  /*
-    //network
-    if (mymenu.page == 4) {
-    display.setCursor(0, 0);
-    if (mymenu.inv == 1) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("wifi scan");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("wifi scan");
-    }
-    if (mymenu.inv == 1) {
-      display.setTextColor(BLACK, WHITE);
-      display.println("mqtt");
-      display.setTextColor(WHITE);
-    } else {
-      display.println("mqtt");
-    }
-
-    //display.println(mymenu.inv);
-    display.display();
-    }
-  */
 } // show_menu()
 
 int button_press(String button_num) {
@@ -257,13 +260,11 @@ int button_press(String button_num) {
     mymenu.inv++;
     return 0;
   }
-
   // BACK button pressed
   if (my_butt == 3 && mymenu.page > 1) {
     mymenu.page = 1;
     return 0;
   }
-
   // enter button pressed
   if (my_butt == 4) {
     if (mymenu.page == 1 && mymenu.inv == 1) {
@@ -273,7 +274,6 @@ int button_press(String button_num) {
       mymenu.total = 4; // match number of items in bling menu
       return 0;
     }
-
     if (mymenu.page == 1 && mymenu.inv == 2) {
       // page 3 (games)
       mymenu.page = 3;
@@ -282,6 +282,13 @@ int button_press(String button_num) {
       return 0;
     }
     if (mymenu.page == 1 && mymenu.inv == 3) {
+      // page 4 (network)
+      mymenu.page = 4;
+      mymenu.inv = 1;     // set to invert first item
+      mymenu.total = 3;  //match number of items in network menu
+      return 0;
+    }
+    if (mymenu.page == 1 && mymenu.inv == 4) {
       // call the about() function
       about();
       return 0;
@@ -329,7 +336,15 @@ int button_press(String button_num) {
       // wireless scanner
       return 0;
     }
-
+    // ************* network tool selection ***********
+    if (mymenu.page == 4 && mymenu.inv == 2) {
+      // mqtt
+      return 0;
+    }
+    if (mymenu.page == 4 && mymenu.inv == 3) {
+      // desync
+      return 0;
+    }
   }
 
 } // button_press()
