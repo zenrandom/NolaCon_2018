@@ -48,3 +48,7 @@ esp32/firmware/build
 firmware.*
 .codelite
 
+
+# docs
+docs/html
+docs/latex

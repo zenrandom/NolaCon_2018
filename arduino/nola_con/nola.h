@@ -1,16 +1,14 @@
 #ifndef NOLA_H
 #define NOLA_H
 
-String version = "0.4";
 
-//SSD1306 display(0x3c, D2, D1);
-#define OLED_RESET 2
-Adafruit_SSD1306 display(OLED_RESET);
+#include <Arduino.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <APA102.h>
 
-//#if (SSD1306_LCDHEIGHT != 64)
-//#error("Height incorrect, please fix Adafruit_SSD1306.h!");
-//#endif
-//#define SSD1306_LCDHEIGHT = 64
+
+const String version = "0.5";
 
 // Define which pins to use.
 const uint8_t dataPin  = D6;
@@ -36,10 +34,12 @@ const float multiplier = pow(maxPower / minPower, 1.0 / (ledCount - 1));
 #define DP_WID_MID 64
 #define DP_HEI_MID 32
 
-int switchPin1 = D3;        // UP      
-int switchPin2 = D4;        // DOWN
-int switchPin3 = D7;        // BACK
-int switchPin4 = D10;       // ENTER
+const int switchPin1 = D3;        // UP      
+const int switchPin2 = D4;        // DOWN
+const int switchPin3 = D7;        // BACK
+const int switchPin4 = D10;       // ENTER
+
+
 
 // function headers
 
@@ -51,33 +51,11 @@ void cyberPolice();
 void rainbow(); 
 void ytCracker();
 void gradient();
-void burgess_pong();
-void drawCourt();
+//void burgess_pong();
+//void drawCourt();
 void about();
 rgb_color hsvToRgb(uint16_t, uint8_t, uint8_t);
 void sendWhite(uint16_t);
-
-
-
-// ******************* game *********************
-// shamelssly stolen from:  https://github.com/eholk/Arduino-Pong/blob/master/pong.ino
-const unsigned long PADDLE_RATE = 33;
-const unsigned long BALL_RATE = 16;
-const uint8_t PADDLE_HEIGHT = 24;
-
-uint8_t ball_x = 64, ball_y = 32;
-uint8_t ball_dir_x = 1, ball_dir_y = 1;
-unsigned long ball_update;
-
-unsigned long paddle_update;
-const uint8_t CPU_X = 12;
-uint8_t cpu_y = 16;
-
-const uint8_t PLAYER_X = 115;
-uint8_t player_y = 16;
-
-// ******************* game *********************
-
 
 class MyMenu{
   public:
