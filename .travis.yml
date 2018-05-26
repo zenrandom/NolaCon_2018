@@ -13,7 +13,7 @@ env:
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
 
 before_install:
-   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+        - source <(curl -SLs https://github.com/theDevilsVoice/NolaCon_2018/blob/master/arduino/install.sh)
 
 install:
    - arduino --install-library "APA102", "Adafruit SSD1306 Library","Adafruit GFX Library"
