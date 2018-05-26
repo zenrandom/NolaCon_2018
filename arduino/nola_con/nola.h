@@ -8,7 +8,7 @@
 #include <APA102.h>
 
 
-const String version = "0.4";
+const String version = "0.5";
 
 // Define which pins to use.
 const uint8_t dataPin  = D6;

@@ -1,4 +1,7 @@
-/*
+/*!
+ * @file nola_con.ino
+ * 
+ *    
     ____  _____      _    ____    _  ___     ____ ____
    |  _ \| ____|_   / \  |  _ \ _/ |/ _ \ _ / ___| ___|
    | | | |  _| (_) / _ \ | | | (_) | | | (_) |   |___ \
@@ -6,7 +9,10 @@
    |____/|_____(_)_/   \_\____/(_)_|\___/(_)\____|____/
 
 
-   Author : @theDevilsVoice @p0lr_ @mzbat
+ * @section author Author
+ * 
+ * Written by @theDevilsVoice @p0lr_ @mzbat for @dead10c5
+ * 
    Date   : May 26, 2018
    Version: 0.5
 */
@@ -29,10 +35,6 @@ MyNetwork::MyNetwork() {
   WiFiIndex = 0;
   WiFiCount = 0;
   DisplayUpdate = true;
-}
-
-void MyNetwork::begin() {
-  Serial.println( "Called MyNetwork::begin" );
 }
 
 int MyNetwork::MyNetStatus() {

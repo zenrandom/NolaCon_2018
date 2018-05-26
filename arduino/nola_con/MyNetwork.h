@@ -60,7 +60,7 @@ Adafruit_MQTT_Subscribe toBadge = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/
       int    WiFiIndex;
       int    WiFiCount;
       bool   DisplayUpdate;
-      void begin();
+      
       int MyNetStatus();
       String GetWiFiStatus(int);
       String GetWiFiEncryption(int);
