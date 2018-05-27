@@ -18,7 +18,7 @@ before_install:
 
 install:
    - git clone https://github.com/adafruit/Adafruit-GFX-Library.git
-   - mv Adafruit-GX-Library $HOME/arduino_ide/libraries
+   - mv Adafruit-GFX-Library $HOME/arduino_ide/libraries
 
    - git clone https://github.com/adafruit/Adafruit_SSD1306.git
    - mv Adafruit_SSD1306 $HOME/arduino_ide/libraries
