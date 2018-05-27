@@ -32,7 +32,7 @@ MyGame mygame;
 Adafruit_SSD1306 display(OLED_RESET);
 
 #if (SSD1306_LCDHEIGHT != 64)
-#warning("Height incorrect, please fix Adafruit_SSD1306.h!");
+#pragma warning("Height incorrect, please fix Adafruit_SSD1306.h!");
 #define SSD1306_LCDHEIGHT = 64
 #endif
 
