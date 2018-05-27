@@ -11,12 +11,22 @@ env:
      - PRETTYNAME="NolaCon 2018 Badge"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
+     - DOXYFILE: /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/nola_con/Doxyfile
 
 before_install:
-        - source <(curl -SLs https://raw.githubusercontent.com/DEAD10C5/NolaCon_2018/master/arduino/install.sh)
+   - source <(curl -SLs https://raw.githubusercontent.com/DEAD10C5/NolaCon_2018/master/arduino/install.sh)
 
 install:
-   - arduino --install-library "APA102", "Adafruit SSD1306","Adafruit GFX Library"
+   - git clone https://github.com/adafruit/Adafruit-GFX-Library.git
+   - mv Adafruit-GX-Library $HOME/arduino_ide/libraries
+
+   - git clone https://github.com/adafruit/Adafruit_SSD1306.git
+   - mv Adafruit_SSD1306 $HOME/arduino_ide/libraries
+
+   - git clone https://github.com/pololu/apa102-arduino.git
+   - mv apa102-arduino $HOME/arduino_ide/libraries
+
+   - /home/travis/arduino_ide/arduino --install-library "APA102", "Adafruit SSD1306","Adafruit GFX Library"
 
 script:
    - build_main_platforms
