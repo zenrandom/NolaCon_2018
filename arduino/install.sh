@@ -16,7 +16,7 @@
 #       CREATED: 05/26/2018 19:50
 #      REVISION:  ---
 #===============================================================================
-set -o nounset                              # Treat unset variables as an error
+#set -o nounset                              # Treat unset variables as an error
 
 # we need bash 4 for associative arrays
 if [ "${BASH_VERSION%%[^0-9]*}" -lt "4" ]; then
@@ -27,8 +27,9 @@ fi
 # associative array for the platforms that will be verified in build_main_platforms()
 # this will be eval'd in the functions below because arrays can't be exported
 # Uno is ATmega328, Zero is SAMD21G18, ESP8277, Leonardo is ATmega32u4, M4 is SAMD51, Mega is ATmega2560, ESP32
-export MAIN_PLATFORMS='declare -A main_platforms=( [uno]="arduino:avr:uno" [due]="arduino:sam:arduino_due_x" [zero]="arduino:samd:arduino_zero_native" [esp8266]="esp8266:esp8266:huzzah:FlashSize=4M3M,CpuFrequency=80" [leonardo]="arduino:avr:leonardo" [m4]="adafruit:samd:adafruit_metro_m4" [mega2560]="arduino:avr:mega:cpu=atmega2560" [esp32]="espressif:esp32:featheresp32:FlashFreq=80" )'
+#export MAIN_PLATFORMS='declare -A main_platforms=( [uno]="arduino:avr:uno" [due]="arduino:sam:arduino_due_x" [zero]="arduino:samd:arduino_zero_native" [esp8266]="esp8266:esp8266:huzzah:FlashSize=4M3M,CpuFrequency=80" [leonardo]="arduino:avr:leonardo" [m4]="adafruit:samd:adafruit_metro_m4" [mega2560]="arduino:avr:mega:cpu=atmega2560" [esp32]="espressif:esp32:featheresp32:FlashFreq=80" )'
 
+export MAIN_PLATFORMS='declare -A main_platforms=([esp8266]="esp8266:esp8266:generic:FlashSize=4M3M,CpuFrequency=80" )'
 # associative array for other platforms that can be called explicitly in .travis.yml configs
 # this will be eval'd in the functions below because arrays can't be exported
 export AUX_PLATFORMS='declare -A aux_platforms=( [trinket]="adafruit:avr:trinket5" [gemma]="arduino:avr:gemma" )'
@@ -62,38 +63,39 @@ echo "########################################################################";
 
 # install the due, esp8266, and adafruit board packages
 echo -n "ADD PACKAGE INDEX: "
-DEPENDENCY_OUTPUT=$(arduino --pref "boardsmanager.additional.urls=https://adafruit.github.io/arduino-board-index/package_adafruit_index.json,http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs 2>&1)
+#DEPENDENCY_OUTPUT=$(arduino --pref "boardsmanager.additional.urls=https://adafruit.github.io/arduino-board-index/package_adafruit_index.json,http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs 2>&1)
+DEPENDENCY_OUTPUT=$(arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs 2>&1)
 if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
-echo -n "ESP32: "
-DEPENDENCY_OUTPUT=$(mkdir -p $HOME/Arduino/hardware/espressif &&
-    cd $HOME/Arduino/hardware/espressif &&
-    git clone https://github.com/espressif/arduino-esp32.git esp32 &&
-    cd esp32/tools/ &&
-    python get.py &&
-    cd $TRAVIS_BUILD_DIR
-)
-if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
+#echo -n "ESP32: "
+#DEPENDENCY_OUTPUT=$(mkdir -p $HOME/Arduino/hardware/espressif &&
+#    cd $HOME/Arduino/hardware/espressif &&
+#    git clone https://github.com/espressif/arduino-esp32.git esp32 &&
+#    cd esp32/tools/ &&
+#    python get.py &&
+#    cd $TRAVIS_BUILD_DIR
+#)
+#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
-echo -n "DUE: "
-DEPENDENCY_OUTPUT=$(arduino --install-boards arduino:sam 2>&1)
-if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
+#echo -n "DUE: "
+#DEPENDENCY_OUTPUT=$(arduino --install-boards arduino:sam 2>&1)
+#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
-echo -n "ZERO: "
-DEPENDENCY_OUTPUT=$(arduino --install-boards arduino:samd 2>&1)
-if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
+#echo -n "ZERO: "
+#DEPENDENCY_OUTPUT=$(arduino --install-boards arduino:samd 2>&1)
+#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
 echo -n "ESP8266: "
 DEPENDENCY_OUTPUT=$(arduino --install-boards esp8266:esp8266 2>&1)
 if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
-echo -n "ADAFRUIT AVR: "
-DEPENDENCY_OUTPUT=$(arduino --install-boards adafruit:avr 2>&1)
-if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
+#echo -n "ADAFRUIT AVR: "
+#DEPENDENCY_OUTPUT=$(arduino --install-boards adafruit:avr 2>&1)
+#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
-echo -n "ADAFRUIT SAMD: "
-DEPENDENCY_OUTPUT=$(arduino --install-boards adafruit:samd 2>&1)
-if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
+#echo -n "ADAFRUIT SAMD: "
+#DEPENDENCY_OUTPUT=$(arduino --install-boards adafruit:samd 2>&1)
+#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
 # install random lib so the arduino IDE grabs a new library index
 # see: https://github.com/arduino/Arduino/issues/3535
@@ -121,9 +123,9 @@ function build_platform()
 
   # arrays can't be exported, so we have to eval
   eval $MAIN_PLATFORMS
-  eval $AUX_PLATFORMS
-  eval $CPLAY_PLATFORMS
-  eval $M4_PLATFORMS
+  #eval $AUX_PLATFORMS
+  #eval $CPLAY_PLATFORMS
+  #eval $M4_PLATFORMS
 
   # reset platform json var
   PLATFORM_JSON=""
