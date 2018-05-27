@@ -21,10 +21,11 @@
 
 class MyButt {
   private:
-    int switchPin1 = D3;        // UP
-    int switchPin2 = D4;        // DOWN
-    int switchPin3 = D7;        // BACK
-    int switchPin4 = D10;       // ENTER
+    // switch pins
+    const int switchPin1 = 0;         // UP     D3   
+    const int switchPin2 = 2;         // DOWN   D4
+    const int switchPin3 = 13;        // BACK   D7
+    const int switchPin4 = 1;         // ENTER  D10
   public:
     int button_press(String button_num,
                      MyGame *mygame,
