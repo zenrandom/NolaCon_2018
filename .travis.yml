@@ -11,7 +11,7 @@ env:
      - PRETTYNAME="NolaCon 2018 Badge"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
-    - DOXYFILE: /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/nola_con/Doxyfile
+#    - DOXYFILE: /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/nola_con/Doxyfile
 
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/DEAD10C5/NolaCon_2018/master/arduino/install.sh)
@@ -32,7 +32,7 @@ install:
    - git clone https://github.com/adafruit/Adafruit_MQTT_Library.git
    - mv Adafruit_MQTT_Library $HOME/arduino_ide/libraries
 
-   - /home/travis/arduino_ide/arduino --install-library "ArduinoThread", "APA102", "Adafruit SSD1306","Adafruit GFX Library"
+   - /home/travis/arduino_ide/arduino --install-library "Adafruit_MQTT_Library", "ArduinoThread", "APA102", "Adafruit SSD1306","Adafruit GFX Library"
 
 script:
    - build_main_platforms
