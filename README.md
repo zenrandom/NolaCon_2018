@@ -1,5 +1,9 @@
 ### [Check the Wiki for How To Use](https://github.com/DEAD10C5/BSidesIndyBadge/wiki)
-<div style="text-align:center"><img src ="https://github.com/DEAD10C5/BSidesIndyBadge/art/fld-binary.png" /></div>
+
+<p>
+Build status: <img src="https://travis-ci.org/theDevilsVoice/NolaCon_2018.svg?branch=master">
+
+
 ```
  ____  _____      _    ____    _  ___     ____ ____  
 |  _ \| ____|_   / \  |  _ \ _/ |/ _ \ _ / ___| ___| 
