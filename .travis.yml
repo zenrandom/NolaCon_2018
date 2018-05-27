@@ -32,7 +32,7 @@ install:
    - git clone https://github.com/adafruit/Adafruit_MQTT_Library.git
    - mv Adafruit_MQTT_Library $HOME/arduino_ide/libraries
 
-   - /home/travis/arduino_ide/arduino --install-library "Adafruit_MQTT_Library", "ArduinoThread", "APA102", "Adafruit SSD1306","Adafruit GFX Library"
+   - /home/travis/arduino_ide/arduino --install-library "APA102", "Adafruit SSD1306", "Adafruit GFX Library"
 
 script:
    - build_main_platforms
