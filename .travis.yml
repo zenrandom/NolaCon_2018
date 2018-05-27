@@ -26,7 +26,10 @@ install:
    - git clone https://github.com/pololu/apa102-arduino.git
    - mv apa102-arduino $HOME/arduino_ide/libraries
 
-   - /home/travis/arduino_ide/arduino --install-library "APA102", "Adafruit SSD1306","Adafruit GFX Library"
+   - git clone https://github.com/ivanseidel/ArduinoThread.git
+   - mv ArduinoThread $HOME/arduino_ide/libraries
+
+   - /home/travis/arduino_ide/arduino --install-library "ArduinoThread", "APA102", "Adafruit SSD1306","Adafruit GFX Library"
 
 script:
    - build_main_platforms
