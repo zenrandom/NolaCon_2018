@@ -89,6 +89,8 @@ echo -n "ESP8266: "
 DEPENDENCY_OUTPUT=$(arduino --install-boards esp8266:esp8266 2>&1)
 if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
+cp /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/platform.txt $HOME/.arduino15/packages/esp8266/hardware/esp8266/2.4.1/
+
 #echo -n "ADAFRUIT AVR: "
 #DEPENDENCY_OUTPUT=$(arduino --install-boards adafruit:avr 2>&1)
 #if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
