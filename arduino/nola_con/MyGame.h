@@ -23,10 +23,10 @@
 
 class MyGame{
   public:
-    int switch1 = D3;        // UP      
-    int switch2 = D4;        // DOWN
-    int switch3 = D7;        // BACK
-    int switch4 = D10;       // ENTER
+    int switch1 = 0;         // UP     D3       
+    int switch2 = 2;         // DOWN   D4
+    int switch3 = 13;        // BACK   D7
+    int switch4 = 1;         // ENTER  D10
     
     void drawCourt(Adafruit_SSD1306 *display);
     void burgess_pong(Adafruit_SSD1306 *display);

@@ -11,8 +11,8 @@
 const String version = "0.5";
 
 // Define which pins to use.
-const uint8_t dataPin  = D6;
-const uint8_t clockPin = D5;
+const uint8_t dataPin = 12; // D6
+const uint8_t clockPin = 14; //D5
 
 // Set the number of LEDs to control.
 const uint16_t ledCount = 8;
@@ -34,10 +34,11 @@ const float multiplier = pow(maxPower / minPower, 1.0 / (ledCount - 1));
 #define DP_WID_MID 64
 #define DP_HEI_MID 32
 
-const int switchPin1 = D3;        // UP      
-const int switchPin2 = D4;        // DOWN
-const int switchPin3 = D7;        // BACK
-const int switchPin4 = D10;       // ENTER
+// switch pins
+const int switchPin1 = 0;         // UP     D3   
+const int switchPin2 = 2;         // DOWN   D4
+const int switchPin3 = 13;        // BACK   D7
+const int switchPin4 = 1;         // ENTER  D10
 
 
 

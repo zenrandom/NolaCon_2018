@@ -6,19 +6,36 @@
 #define OLED_RESET 2
 Adafruit_SSD1306 display(OLED_RESET);
 
+/*
 #if (SSD1306_LCDHEIGHT != 64)
-#warning ("Height incorrect, please fix Adafruit_SSD1306.h!")
+#pragma message("Height incorrect, please fix Adafruit_SSD1306.h!")
+#define SSD1306_LCDHEIGHT = 64
 #endif
+*/
+
+/*
+static const uint8_t D0   = 16;
+static const uint8_t D1   = 5;
+static const uint8_t D2   = 4;
+static const uint8_t D3   = 0;
+static const uint8_t D4   = 2;
+static const uint8_t D5   = 14;
+static const uint8_t D6   = 12;
+static const uint8_t D7   = 13;
+static const uint8_t D8   = 15;
+static const uint8_t D9   = 3;
+static const uint8_t D10  = 1;
+*/
 
 // Define which pins to use.
-const uint8_t dataPin = D6;
-const uint8_t clockPin = D5;
+const uint8_t dataPin = 12; // D6
+const uint8_t clockPin = 14; //D5
 
 // switch pins
-int switchPin1 = D3;              
-int switchPin2 = D4;
-int switchPin3 = D7;
-int switchPin4 = D10;
+const int switchPin1 = 0;         // UP     D3   
+const int switchPin2 = 2;         // DOWN   D4
+const int switchPin3 = 13;        // BACK   D7
+const int switchPin4 = 1;         // ENTER  D10
 
 // Set the number of LEDs to control.
 const uint16_t ledCount = 8;

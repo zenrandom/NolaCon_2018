@@ -31,10 +31,11 @@ MyGame mygame;
 #define OLED_RESET 2
 Adafruit_SSD1306 display(OLED_RESET);
 
-//#if (SSD1306_LCDHEIGHT != 64)
-//#error("Height incorrect, please fix Adafruit_SSD1306.h!");
-//#endif
-//#define SSD1306_LCDHEIGHT = 64
+/*
+#if (SSD1306_LCDHEIGHT != 64)
+#pragma message("Height incorrect, please fix Adafruit_SSD1306.h!")
+#endif
+*/
 
 // ThreadController that will controll all threads
 ThreadController controll = ThreadController();
