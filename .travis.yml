@@ -35,7 +35,8 @@ install:
 
    - /home/travis/arduino_ide/arduino --install-library "APA102", "Adafruit SSD1306", "Adafruit GFX Library"
 
-   - cp /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/Adafruit_SSD1306.h $HOME/arduino_ide/libraries/Adafruit_SSD1306
+   - cp /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/platform.txt $HOME/.arduino15/packages/esp8266/hardware/esp8266/2.4.1/
+
 script:
    - build_main_platforms
 
