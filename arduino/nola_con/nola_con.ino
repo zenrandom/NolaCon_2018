@@ -1,4 +1,5 @@
-/*
+/*!
+ * @file nola_con.ino
     ____  _____      _    ____    _  ___     ____ ____
    |  _ \| ____|_   / \  |  _ \ _/ |/ _ \ _ / ___| ___|
    | | | |  _| (_) / _ \ | | | (_) | | | (_) |   |___ \
@@ -16,10 +17,11 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <APA102.h>
-#include <Thread.h>
-#include <ThreadController.h>
+
 #include "nola.h"
 #include "MyGame.h"
+#include "MyLed.h"
+#include "MyMenu.h"
 #include "MyNetwork.h"
 
 // Initialize instance of MyNetwork() class
@@ -37,24 +39,11 @@ Adafruit_SSD1306 display(OLED_RESET);
 #endif
 */
 
-// ThreadController that will controll all threads
-ThreadController controll = ThreadController();
-
 // Create an object for writing to the LED strip.
 APA102<dataPin, clockPin> ledStrip;
 
 // Create a buffer for holding the colors (3 bytes per color).
 rgb_color colors[ledCount];
-
-Thread ledThread = Thread();
-//Thread screenThread = Thread();
-//Thread buttonThread = Thread();
-//ButtonThread btn1Thread(switchPin1, 3000);
-//ButtonThread btn2Thread(switchPin2, 5000);
-//ButtonThread btn3Thread(switchPin3, 3000);
-//ButtonThread btn4Thread(switchPin4, 3000);
-
-
 
 void setup() {
 
@@ -89,16 +78,12 @@ void setup() {
   mymenu.page = 1;
   mymenu.total = 3;
 
-  // Configure myThread
-  ledThread.onRun(ledCallback);
-  ledThread.setInterval(500);
-
 }
 
 void loop() {
 
-  controll.run();
-  if (digitalRead(switchPin1) == LOW) {               // check if the button is pressed
+   // check if any button is pressed
+  if (digitalRead(switchPin1) == LOW) {               
     button_press("1");
   } else if (digitalRead(switchPin2) == LOW) {
     button_press("2");
@@ -307,22 +292,22 @@ int button_press(String button_num) {
     // ************* led pattern selection ***********
     if (mymenu.page == 2 && mymenu.inv == 1) {
       mymenu.ledpattern = 1;
-      ledCallback();
+      //ledCallback();
       return 0;
     }
     if (mymenu.page == 2 && mymenu.inv == 2) {
       mymenu.ledpattern = 2;
-      ledCallback();
+      //ledCallback();
       return 0;
     }
     if (mymenu.page == 2 && mymenu.inv == 3) {
       mymenu.ledpattern = 3;
-      ledCallback();
+      //ledCallback();
       return 0;
     }
     if (mymenu.page == 2 && mymenu.inv == 4) {
       mymenu.ledpattern = 5; // gradient pattern
-      ledCallback();
+      //ledCallback();
       return 0;
     }
 

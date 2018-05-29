@@ -1,4 +1,5 @@
-/*
+/*!
+ * @file MyNetwork.h
  *  ____  _____      _    ____    _  ___     ____ ____  
  * |  _ \| ____|_   / \  |  _ \ _/ |/ _ \ _ / ___| ___| 
  * | | | |  _| (_) / _ \ | | | (_) | | | (_) |   |___ \ 
@@ -17,8 +18,8 @@
 //#include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
 
-//const char* ssid = "batpack";
-//const char* password = "batpack";
+//const char* my_ssid = "nola_badge";
+//const char* my_password = "BonTemps";
 
 
 /*
@@ -61,7 +62,7 @@ Adafruit_MQTT_Subscribe toBadge = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/
       int    WiFiCount;
       bool   DisplayUpdate;
       
-      int MyNetStatus();
+      int    MyNetStatus();
       String GetWiFiStatus(int);
       String GetWiFiEncryption(int);
       //void MQTT_connect();
