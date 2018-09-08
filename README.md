@@ -1,7 +1,8 @@
 ### [Check the Wiki for How To Use](https://github.com/DEAD10C5/BSidesIndyBadge/wiki)
 
 <p>
-Build status: <img src="https://travis-ci.org/theDevilsVoice/NolaCon_2018.svg?branch=master">
+Build status: <img src="https://travis-ci.com/DEAD10C5/NolaCon_2018.svg?branch=master">
+
 
 
 ```

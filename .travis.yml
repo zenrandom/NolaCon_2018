@@ -9,7 +9,7 @@ git:
   quiet: true
 env:
   global:
-    - PRETTYNAME="Bat Badge 2018"
+    - PRETTYNAME="NolaCon Badge 2018"
     - ARDUINO_IDE_VERSION="1.8.5"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
