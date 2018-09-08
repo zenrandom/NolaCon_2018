@@ -1,5 +1,5 @@
 /*!
- * @file nola_con.ino
+ * @file MyNetwork.cpp
  * 
  *    
     ____  _____      _    ____    _  ___     ____ ____

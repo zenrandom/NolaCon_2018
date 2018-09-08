@@ -1,3 +1,18 @@
+/*!
+ * @file nola.h
+ * 
+ *  ____  _____      _    ____    _  ___     ____ ____  
+ * |  _ \| ____|_   / \  |  _ \ _/ |/ _ \ _ / ___| ___| 
+ * | | | |  _| (_) / _ \ | | | (_) | | | (_) |   |___ \ 
+ * | |_| | |___ _ / ___ \| |_| |_| | |_| |_| |___ ___) |
+ * |____/|_____(_)_/   \_\____/(_)_|\___/(_)\____|____/ 
+ *                                                    
+ *                                                    
+ * Author : @theDevilsVoice @p0lr_ @mzbat
+ * Date   : May 26, 2018
+ * Version: 0.5
+ */
+
 #ifndef NOLA_H
 #define NOLA_H
 
@@ -52,21 +67,12 @@ void cyberPolice();
 void rainbow(); 
 void ytCracker();
 void gradient();
-//void burgess_pong();
-//void drawCourt();
+
 void about();
 rgb_color hsvToRgb(uint16_t, uint8_t, uint8_t);
 void sendWhite(uint16_t);
 
-class MyMenu{
-  public:
-    const String myHandle = "@nola_con";
-    String myText; 
-    int page;  // page number
-    int inv;   // which menu item to invert
-    int total; //total menu items on page
-    int ledpattern;
-};
+
 
 // nola logo
 const unsigned char PROGMEM fdl_bmp1 [] = {
