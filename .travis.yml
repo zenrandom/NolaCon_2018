@@ -32,6 +32,7 @@ install:
 
 script:
   #- arduino --verify --board $BD $PWD/DEAD10C5/NolaCon_2018/arduino/nola_con/nola_con.ino
+  - arduino --verify --board $BD /usr/local/share/arduino/libraries/NolaCon_2018/arduino/hardware_test/hardware_test.ino
   - arduino --verify --board $BD /usr/local/share/arduino/libraries/NolaCon_2018/arduino/nola_con/nola_con.ino
 notifications:
   email:
