@@ -31,11 +31,11 @@ install:
   # add your libs here, example:
   #- git clone https://github.com/squix78/esp8266-oled-ssd1306 /usr/local/share/arduino/libraries/esp8266-oled-ssd1306
   - arduino --install-library "APA102"
-  - arduino --install-linrary "Adafruit GFX Library"
+  - arduino --install-library "Adafruit GFX Library"
   - arduino --install-library "Adafruit SSD1306"
 
 script:
-  - build_platform esp8266
+  #- build_platform esp8266
   - arduino --verify --board $BD $PWD/DEAD10C5/NolaCon_2018/arduino/nola_con/nola_con.ino
 notifications:
   email:
