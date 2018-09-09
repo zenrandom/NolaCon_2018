@@ -6,13 +6,12 @@ cache:
 git:
   depth: false
   quiet: true
-
 env:
-  - BD=esp8266:esp8266:nodemcuv2:CpuFrequency=80,FlashSize=4M3M
   global:
+    - BD="esp8266:esp8266:nodemcuv2:CpuFrequency=80,FlashSize=4M3M"
     - PRETTYNAME="NolaCon Badge 2018"
     - ARDUINO_IDE_VERSION="1.8.6"
-    - DOXYFILE: $TRAVIS_BUILD_DIR/theDevilsVoice/NolaCon_2018/arduino/nola_con/Doxyfile
+      #- DOXYFILE: $TRAVIS_BUILD_DIR/DEAD10C5/NolaCon_2018/arduino/nola_con/Doxyfile
 before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
   - sleep 3
