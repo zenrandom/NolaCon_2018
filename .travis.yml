@@ -1,4 +1,11 @@
 language: c
+sudo: false
+cache:
+  directories:
+     #- ~/arduino_ide
+    - ~/.arduino15/packages/
+git:
+  depth: false
 env:
   - BD=esp8266:esp8266:nodemcuv2:CpuFrequency=80,FlashSize=4M3M
   global:
