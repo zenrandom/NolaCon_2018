@@ -1,11 +1,4 @@
 language: c
-sudo: false
-cache:
-  directories:
-     #- ~/arduino_ide
-    - ~/.arduino15/packages/
-git:
-  depth: false
 env:
   - BD=esp8266:esp8266:nodemcuv2:CpuFrequency=80,FlashSize=4M3M
   global:
@@ -30,10 +23,15 @@ install:
   # install lib
   # add your libs here, example:
   #- git clone https://github.com/squix78/esp8266-oled-ssd1306 /usr/local/share/arduino/libraries/esp8266-oled-ssd1306
-  - arduino --install-library "APA102,Adafruit GFX"
+  #- arduino --install-library "APA102"
+  #- arduino --install-library "Adafruit GFX Library"
+  #- arduino --install-library "Adafruit SSD1306"
+  - git clone https://github.com/adafruit/Adafruit-GFX-Library.git
+  - git clone https://github.com/adafruit/Adafruit_SSD1306.git
+  - git clone https://github.com/pololu/apa102-arduino.git
 
 script:
-  - build_platform esp8266
+  #- build_platform esp8266
   - arduino --verify --board $BD $PWD/DEAD10C5/NolaCon_2018/arduino/nola_con/nola_con.ino
 notifications:
   email:
