@@ -23,7 +23,7 @@ install:
   # install lib
   # add your libs here, example:
   #- git clone https://github.com/squix78/esp8266-oled-ssd1306 /usr/local/share/arduino/libraries/esp8266-oled-ssd1306
-  - arduino --install-library "APA102"
+  - arduino --install-library "APA102,Adafruit GFX"
 
 script:
   - build_platform esp8266
