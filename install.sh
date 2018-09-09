@@ -19,13 +19,13 @@
 #      REVISION:  ---
 #===============================================================================
 
-set -o nounset                              # Treat unset variables as an error
+#set -o nounset                              # Treat unset variables as an error
 
 # we need bash 4 for associative arrays
-if [ "${BASH_VERSION%%[^0-9]*}" -lt "4" ]; then
-  echo "BASH VERSION < 4: ${BASH_VERSION}" >&2
-  exit 1
-fi
+#if [ "${BASH_VERSION%%[^0-9]*}" -lt "4" ]; then
+#  echo "BASH VERSION < 4: ${BASH_VERSION}" >&2
+#  exit 1
+#fi
 
 # associative array for the platforms that will be verified in build_main_platforms()
 # this will be eval'd in the functions below because arrays can't be exported
