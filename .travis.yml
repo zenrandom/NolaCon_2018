@@ -10,22 +10,20 @@ git:
 env:
   global:
     - PRETTYNAME="NolaCon Badge 2018"
-    - ARDUINO_IDE_VERSION="1.8.5"
+    - ARDUINO_IDE_VERSION="1.8.6"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
 #    - DOXYFILE: /home/travis/build/theDevilsVoice/NolaCon_2018/arduino/nola_con/Doxyfile
 
 before_install:
-  - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+        - source <(curl -SLs https://raw.githubusercontent.com/DEAD10C5/NolaCon_2018/master/install.sh)
 install:
   #- ln -s $PWD /usr/local/share/arduino/libraries/Adafruit_FONA
   - arduino --install-library "APA102"
 
 script:
-  #- arduino --verify --board arduino:avr:uno $PWD/examples/FONAtest/FONAtest.ino
-  #- arduino --verify --board arduino:avr:uno $PWD/examples/IncomingCall/IncomingCall.ino
-  #- arduino --verify --board arduino:avr:uno $PWD/examples/AdafruitIO_GPS/AdafruitIO_GPS.ino
-
+  - build_platform esp8266
+  - arduino --verify --board attiny:avr:attiny /home/travis/DEAD10C5/NolaCon_2018/arduino/nola_con/nola_con.ino
 notifications:
   email:
     on_success: change
