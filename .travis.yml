@@ -31,7 +31,8 @@ install:
   - git clone https://github.com/pololu/apa102-arduino.git /usr/local/share/arduino/libraries/apa102-arduino
 
 script:
-  - arduino --verify --board $BD $PWD/DEAD10C5/NolaCon_2018/arduino/nola_con/nola_con.ino
+  #- arduino --verify --board $BD $PWD/DEAD10C5/NolaCon_2018/arduino/nola_con/nola_con.ino
+  - arduino --verify --board $BD /usr/local/share/arduino/libraries/NolaCon_2018/arduino/nola_con/nola_con.ino
 notifications:
   email:
     on_success: change
